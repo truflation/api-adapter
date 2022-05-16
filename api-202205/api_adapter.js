@@ -79,6 +79,9 @@ class ApiAdapter {
       console.log(typeof result[0])
       if (result[1]) {
         res.status(status).json(result[0])
+      } else if (result[0] === undefined) {
+        res.status(500)
+        res.end(undefined, 'binary')
       } else {
         res.status(status).write(result[0])
         res.end(undefined, 'binary')
