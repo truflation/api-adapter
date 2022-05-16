@@ -77,14 +77,15 @@ class ApiAdapter {
     this.createRequest(req.body, (status, result) => {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
-      if (result[1]) {
-        res.status(status).json(result[0])
-      } else if (result[0] === undefined) {
-        res.status(500)
-        res.end(undefined, 'binary')
-      } else {
-        res.status(status).write(result[0])
-        res.end(undefined, 'binary')
+      try {
+        if (result[1]) {
+          res.status(status).json(result[0])
+        } else {
+          res.status(status).write(result[0])
+          res.end(undefined, 'binary')
+        }
+      } catch (err) {
+        res.status(500).send(err)
       }
     })
   }
@@ -99,6 +100,7 @@ class ApiAdapter {
     }
 
     if (url === undefined) {
+      callback(500, ["no service", false])
       return
     }
 
@@ -130,7 +132,7 @@ class ApiAdapter {
         callback(response.status, [retval, json])
       })
       .catch(error => {
-        callback(500, Requester.errored(0, error))
+        callback(500, [Requester.errored(0, error), false])
       })
   }
 
