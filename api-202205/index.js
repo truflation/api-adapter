@@ -11,6 +11,7 @@ const { ApiAdapter, echoFunc, stub1Func } =
 
 const app = new ApiAdapter({
   urlPost: {
+    'nft-index': 'http://truflation-dev-8080.hydrogenx.tk:8080/dev-test/index-value'
   },
   urlGet: {
     'truflation/current': 'https://api.truflation.com/current',
