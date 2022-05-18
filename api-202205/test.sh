@@ -2,6 +2,11 @@
 set -v
 URL_ADAPTER=${URL_ADAPTER=http://localhost:8082/}
 
+curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "echo",
+"data": {"foo": [30, 10530, "string"]},
+"abi": "ipfs"
+}'
+
 curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{
 "service": "no-service"
 }'

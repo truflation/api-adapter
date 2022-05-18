@@ -12,12 +12,17 @@ const { Requester } = require('@chainlink/external-adapter')
 const Web3EthAbi = require('web3-eth-abi')
 const JSONKeyPath = require('json-keypath')
 const cbor = require('cbor')
+const IPFS = require('ipfs-core')
+let ipfs
 
-function extractData (data, header) {
+async function extractData (data, header) {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
   console.log(header)
+  if (ipfs === undefined) {
+    ipfs = await IPFS.create()
+  }
 
   let json = true
   if (keypath !== undefined &&
@@ -39,7 +44,11 @@ function extractData (data, header) {
   if (abi === undefined || abi === '') {
     abi = 'json'
   }
-  if (abi === 'cbor') {
+  if (abi === 'ipfs') {
+    const r = await ipfs.add(JSON.stringify(data))
+    data = r.path
+    json = false
+  } else if (abi === 'cbor') {
     data = cbor.encode(data)
     json = false
   } else if (abi !== 'json') {
@@ -61,7 +70,7 @@ class ApiAdapter {
     })
   }
 
-  process (req, res) {
+  async process (req, res) {
     console.log('POST Data: ', req.body)
     const service = req.body.service
     if (service === undefined) {
@@ -90,7 +99,7 @@ class ApiAdapter {
     })
   }
 
-  createRequest (input, callback) {
+  async createRequest (input, callback) {
     const service = input.service
     let url = this.services.urlPost[service]
     let method = 'post'
@@ -124,8 +133,8 @@ class ApiAdapter {
         timeout: 300000
       }
     )
-      .then(response => {
-        const [retval, json] = extractData(
+      .then(async response => {
+        const [retval, json] = await extractData(
           response.data, input
         )
         console.log(retval)
@@ -141,13 +150,13 @@ class ApiAdapter {
   }
 }
 
-function echoFunc (req, res) {
+async function echoFunc (req, res) {
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data)
   }
-  const [retval, json] = extractData(
+  const [retval, json] = await extractData(
     data, req.body
   )
   if (json) {
@@ -158,7 +167,7 @@ function echoFunc (req, res) {
   }
 }
 
-function stub1Func (req, res) {
+async function stub1Func (req, res) {
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
