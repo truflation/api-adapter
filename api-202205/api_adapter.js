@@ -12,17 +12,14 @@ const { Requester } = require('@chainlink/external-adapter')
 const Web3EthAbi = require('web3-eth-abi')
 const JSONKeyPath = require('json-keypath')
 const cbor = require('cbor')
-const IPFS = require('ipfs-core')
-let ipfs
+const { create } = require('ipfs-http-client')
+const client = create('https://ipfs.infura.io:5001/api/v0')
 
 async function extractData (data, header) {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
   console.log(header)
-  if (ipfs === undefined) {
-    ipfs = await IPFS.create()
-  }
 
   let json = true
   if (keypath !== undefined &&
@@ -45,7 +42,7 @@ async function extractData (data, header) {
     abi = 'json'
   }
   if (abi === 'ipfs') {
-    const r = await ipfs.add(JSON.stringify(data))
+    const r = await client.add(JSON.stringify(data))
     data = r.path
     json = false
   } else if (abi === 'cbor') {
