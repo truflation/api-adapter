@@ -81,7 +81,7 @@ class ApiAdapter {
     console.log('POST Data: ', req.body)
     const service = req.body?.service
     if (service === undefined) {
-      res.status(500).send('No service')
+      res.status(200).json({'error': 'No service'})
       return
     }
 
@@ -101,7 +101,7 @@ class ApiAdapter {
           res.end(undefined, 'binary')
         }
       } catch (err) {
-        res.status(500).send(err)
+        res.status(200).send(err)
       }
     })
   }
@@ -116,7 +116,7 @@ class ApiAdapter {
     }
 
     if (url === undefined) {
-      callback(500, ["no service", false])
+      callback(200, ["no service", false])
       return
     }
 
@@ -156,7 +156,7 @@ class ApiAdapter {
         callback(response.status, [retval, json])
       })
       .catch(error => {
-        callback(500, [Requester.errored(0, error), false])
+        callback(200, [Requester.errored(0, error), false])
       })
   }
 
