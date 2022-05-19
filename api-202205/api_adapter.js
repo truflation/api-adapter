@@ -79,13 +79,13 @@ class ApiAdapter {
 
   async process (req, res) {
     console.log('POST Data: ', req.body)
-    const service = req.body.service
+    const service = req.body?.service
     if (service === undefined) {
       res.status(500).send('No service')
       return
     }
 
-    if (this.services.func[service] !== undefined) {
+    if (this?.services?.func[service] !== undefined) {
       this.services.func[service](req, res)
       return
     }
@@ -108,11 +108,11 @@ class ApiAdapter {
 
   async createRequest (input, callback) {
     const service = input.service
-    let url = this.services.urlPost[service]
+    let url = this.services?.urlPost[service]
     let method = 'post'
     if (url === undefined) {
       method = 'get'
-      url = this.services.urlGet[service]
+      url = this.services?.urlGet[service]
     }
 
     if (url === undefined) {
@@ -131,7 +131,7 @@ class ApiAdapter {
       data = {}
     }
 
-    if (this.services.urlEncodeData[service] === true) {
+    if (this.services?.urlEncodeData[service] === true) {
       console.log('urlencode')
       url = url + "?" + serialize(data)
       console.log(url)
