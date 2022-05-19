@@ -13,7 +13,8 @@
     "cbor": "^8.1.0",
     "ipfs-http-client": "^56.0.3",
     "json-keypath": "^0.1.2",
-    "web3-eth-abi": "^1.7.3"
+    "web3-eth-abi": "^1.7.3",
+    "whatwg-url": "^11.0.0"
   },
   "devDependencies": {
     "body-parser": "^1.19.0",
