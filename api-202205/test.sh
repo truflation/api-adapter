@@ -7,6 +7,18 @@ curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"servi
 "abi": "ipfs"
 }'
 
+curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "truflation/at-date",
+"data": {"date" : "2021-10-10"},
+"abi": "json"
+}'
+
+
+curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "truflation/range",
+"data": {"start-date" : "2021-10-10", "end-date": "2021-10-25", "interval": "day"},
+"abi": "ipfs"
+}'
+
+
 curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{
 "service": "no-service"
 }'

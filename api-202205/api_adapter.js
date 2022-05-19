@@ -41,10 +41,12 @@ async function extractData (data, header) {
   if (abi === undefined || abi === '') {
     abi = 'json'
   }
-  if (abi === 'ipfs') {
+  if (abi === 'ipfs' || abi === 'ipfs/json') {
     const r = await client.add(JSON.stringify(data))
     data = r.path
     json = false
+  } else if (abi === 'ipfs/cbor') {
+    const r = await client.add(cbor.encode(data))
   } else if (abi === 'cbor') {
     data = cbor.encode(data)
     json = false
@@ -52,9 +54,17 @@ async function extractData (data, header) {
     data = Web3EthAbi.encodeParameter(abi, data)
     json = false
   }
-
   console.log(data, json)
   return [data, json]
+}
+
+function serialize(obj) {
+  let str = [];
+  for (var p in obj)
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+  return str.join("&");
 }
 
 class ApiAdapter {
@@ -110,17 +120,25 @@ class ApiAdapter {
       return
     }
 
+
     let data = input.data
     if ((typeof data === 'string' ||
          data instanceof String) &&
         data.replace(/\s/g, '').length) {
       data = JSON.parse(data)
     }
-
-    console.log('Url: ', url)
     if (data === undefined) {
       data = {}
     }
+
+    if (this.services.urlEncodeData[service] === true) {
+      console.log('urlencode')
+      url = url + "?" + serialize(data)
+      console.log(url)
+      data = {}
+    }
+
+    console.log('Url: ', url)
     console.log('Data: ', data)
     Requester.request(
       {
