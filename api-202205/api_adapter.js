@@ -4,8 +4,6 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-/* eslint n/no-callback-literal: 0 */
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const { Requester } = require('@chainlink/external-adapter')
@@ -47,6 +45,8 @@ async function extractData (data, header) {
     json = false
   } else if (abi === 'ipfs/cbor') {
     const r = await client.add(cbor.encode(data))
+    data = r.path
+    json = false
   } else if (abi === 'cbor') {
     data = cbor.encode(data)
     json = false
@@ -61,7 +61,7 @@ async function extractData (data, header) {
 function serialize(obj) {
   let str = [];
   for (var p in obj)
-    if (obj.hasOwnProperty(p)) {
+    if (p in obj) {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
   return str.join("&");

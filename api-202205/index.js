@@ -4,8 +4,6 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-/* eslint n/no-callback-literal: 0 */
-
 const { ApiAdapter, echoFunc, stub1Func } =
       require('./api_adapter')
 
