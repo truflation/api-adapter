@@ -13,8 +13,8 @@ const app = new ApiAdapter({
   },
   urlGet: {
     'truflation/current': 'https://api.truflation.com/current',
-    'truflation/at-date': 'https://truflation-api.hydrogenx.tk/at-date',
-    'truflation/range': 'https://truflation-api.hydrogenx.tk/range'
+    'truflation/at-date': 'https://api.truflation.com/at-date',
+    'truflation/range': 'https://api.truflation.com/range'
   },
   urlEncodeData: {
     'truflation/at-date': true,
