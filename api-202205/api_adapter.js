@@ -13,7 +13,15 @@ const cbor = require('cbor')
 const { create } = require('ipfs-http-client')
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-async function extractData (data, header) {
+function isNumeric(val) {
+  // parseFloat NaNs numeric-cast false positives (null|true|false|"")
+  // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
+  // subtraction forces infinities to NaN
+  // adding 1 corrects loss of precision from parseFloat (#15100)
+  return !Array.isArray(val) && (val - parseFloat(val) + 1) >= 0;
+}
+
+async function extractData (data, header, fuzz=false) {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
@@ -26,6 +34,32 @@ async function extractData (data, header) {
       data, keypath
     )
   }
+  console.log('starting fuzz', fuzz)
+  if (fuzz) {
+    console.log('fuzzing')
+    const iterate = (obj) => {
+      let r = {}
+      Object.keys(obj).forEach(key => {
+
+        r[key] = obj[key]
+        if (isNumeric(obj[key])) {
+          const n = +obj[key]
+          r[key] = n * (1.0 + (0.1 * (0.5 - Math.random())))
+        } else {
+          r[key] = obj[key]
+        }
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          r[key] = iterate(obj[key])
+        }
+      })
+      return r
+    }
+    if (typeof data === 'object') {
+      data = iterate(data)
+      console.log('data', data)
+    }
+  }
+
   console.log(multiplier)
   if (multiplier !== undefined &&
       multiplier !== '') {
@@ -150,7 +184,8 @@ class ApiAdapter {
     )
       .then(async response => {
         const [retval, json] = await extractData(
-          response.data, input
+          response.data, input,
+          this.services?.fuzz[service] === true
         )
         console.log(retval)
         callback(response.status, [retval, json])
@@ -166,6 +201,7 @@ class ApiAdapter {
 }
 
 async function echoFunc (req, res) {
+  const service = req.body?.service
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
@@ -182,7 +218,26 @@ async function echoFunc (req, res) {
   }
 }
 
+async function fuzzFunc (req, res) {
+  const service = req.body?.service
+  console.log('POST Data: ', req.body)
+  let data = req.body.data === undefined ? {} : req.body.data
+  if (typeof data === 'string' || data instanceof String) {
+    data = JSON.parse(data)
+  }
+  const [retval, json] = await extractData(
+    data, req.body, true
+  )
+  if (json) {
+    res.json(retval)
+  } else {
+    res.write(retval)
+    res.end(undefined, 'binary')
+  }
+}
+
 async function stub1Func (req, res) {
+  const service = req.body?.service
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
@@ -194,8 +249,8 @@ async function stub1Func (req, res) {
   indexes.forEach(x => {
     data[x] = Math.random() * (range[1] - range[0]) + range[0]
   })
-  const [retval, json] = extractData(
-    data, req.body
+  const [retval, json] = await extractData(
+    data, req.body, false
   )
   if (json) {
     res.json(retval)
@@ -209,5 +264,6 @@ module.exports = {
   ApiAdapter,
   extractData,
   echoFunc,
-  stub1Func
+  stub1Func,
+  fuzzFunc
 }
