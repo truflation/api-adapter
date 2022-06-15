@@ -103,6 +103,19 @@ function serialize(obj) {
 
 class ApiAdapter {
   constructor (services) {
+    if (services?.fuzz === undefined) {
+      services.fuzz = {}
+    }
+    if (services?.func === undefined) {
+      services.func = {}
+    }
+    if (services?.urlPost === undefined) {
+      services.urlPost = {}
+    }
+    if (services?.urlGet === undefined) {
+      services.urlGet = {}
+    }
+
     this.services = services
     this.app = express()
     this.app.use(bodyParser.json())
@@ -112,7 +125,6 @@ class ApiAdapter {
   }
 
   async process (req, res) {
-    console.log('POST Data: ', req.body)
     const service = req.body?.service
     if (service === undefined) {
       res.status(200).json({'error': 'No service'})
@@ -183,6 +195,7 @@ class ApiAdapter {
       }
     )
       .then(async response => {
+        console.log(response.data, input)
         const [retval, json] = await extractData(
           response.data, input,
           this.services?.fuzz[service] === true
