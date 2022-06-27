@@ -9,7 +9,7 @@ const { ApiAdapter, echoFunc, stub1Func, fuzzFunc } =
 
 const services = {
   urlPost: {
-    'nft-index': 'https://truflation-dev-8080.hydrogenx.tk/nft-calc/index-value'
+    'nft-index': 'https://truflation-dev-8080.hydrogenx.live/nft-calc/index-value'
   },
   urlGet: {
     'truflation/current': 'https://api.truflation.com/current',
