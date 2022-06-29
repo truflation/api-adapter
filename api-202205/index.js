@@ -14,11 +14,16 @@ const services = {
   urlGet: {
     'truflation/current': 'https://api.truflation.com/current',
     'truflation/at-date': 'https://api.truflation.com/at-date',
-    'truflation/range': 'https://api.truflation.com/range'
+    'truflation/range': 'https://api.truflation.com/range',
+    'nuon/current': 'https://api.truflation.com/current',
+    'nuon/at-date': 'https://api.truflation.com/at-date',
+    'nuon/range': 'https://api.truflation.com/range'
   },
   urlEncodeData: {
     'truflation/at-date': true,
-    'truflation/range': true
+    'truflation/range': true,
+    'nuon/at-date': true,
+    'nuon/range': true
   },
   func: {
     echo: echoFunc,
@@ -34,8 +39,11 @@ const fuzz = {
   'fuzz' : {
     'nft-index': true,
     'truflation/at-date': true,
-    'truflation/at-date': true,
-    'truflation/range': true
+    'truflation/current': true,
+    'truflation/range': true,
+    'nuon/at-date': true,
+    'nuon/current': true,
+    'nuon/range': true
   }
 }
 
