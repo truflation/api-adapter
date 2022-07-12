@@ -20,6 +20,7 @@ const services = {
     'nuon/range': 'https://api.truflation.com/range'
   },
   urlEncodeData: {
+    'truflation/current': true,
     'truflation/at-date': true,
     'truflation/range': true,
     'nuon/at-date': true,
