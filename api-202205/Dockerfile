@@ -14,5 +14,6 @@ RUN yarn --frozen-lockfile
 COPY --chown=node:node . .
 
 EXPOSE 8081
+EXPOSE 8082
 
 CMD [ "node", "index.js" ]
