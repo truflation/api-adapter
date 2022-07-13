@@ -162,7 +162,7 @@ class ApiAdapter {
     }
 
     if (url === undefined) {
-      callback(200, ["no service", false])
+      callback(200, ['"no service"', false])
       return
     }
 
