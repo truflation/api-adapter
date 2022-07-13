@@ -15,16 +15,15 @@ const services = {
     'truflation/current': 'https://api.truflation.com/current',
     'truflation/at-date': 'https://api.truflation.com/at-date',
     'truflation/range': 'https://api.truflation.com/range',
-    'nuon/current': 'https://api.truflation.com/current',
-    'nuon/at-date': 'https://api.truflation.com/at-date',
-    'nuon/range': 'https://api.truflation.com/range'
+    'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
+    'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index'
   },
   urlEncodeData: {
     'truflation/current': true,
     'truflation/at-date': true,
     'truflation/range': true,
-    'nuon/at-date': true,
-    'nuon/range': true
+    'nuon/dynamic-index': true,
+    'nuon/static-index': true
   },
   func: {
     echo: echoFunc,
@@ -41,10 +40,7 @@ const fuzz = {
     'nft-index': true,
     'truflation/at-date': true,
     'truflation/current': true,
-    'truflation/range': true,
-    'nuon/at-date': true,
-    'nuon/current': true,
-    'nuon/range': true
+    'truflation/range': true
   }
 }
 
