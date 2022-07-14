@@ -25,6 +25,23 @@ const services = {
     'nuon/dynamic-index': true,
     'nuon/static-index': true
   },
+  urlTransform: {
+    'truflation/at-date': (url, data) => {
+      if (data?.location === undefined) {
+        return (url, data)
+      }
+      if (data.location === 'us') {
+        delete data.location
+        return (url, data)
+      }
+      if (data.location.match(/^[a-z]+$/)) {
+        url += "/"
+        url += data.location
+        delete data.location
+      }
+      return (url, data)
+    }
+  },
   func: {
     echo: echoFunc,
     stub1: stub1Func,

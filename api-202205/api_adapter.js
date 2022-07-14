@@ -154,17 +154,6 @@ class ApiAdapter {
 
   async createRequest (input, callback) {
     const service = input.service
-    let url = this.services?.urlPost[service]
-    let method = 'post'
-    if (url === undefined) {
-      method = 'get'
-      url = this.services?.urlGet[service]
-    }
-
-    if (url === undefined) {
-      callback(200, ['"no service"', false])
-      return
-    }
 
 
     let data = input.data
@@ -176,6 +165,25 @@ class ApiAdapter {
     if (data === undefined) {
       data = {}
     }
+
+    let url = this.services?.urlPost[service]
+    let method = 'post'
+    if (url === undefined) {
+      method = 'get'
+      url = this.services?.urlGet[service]
+    }
+
+    if (this.services?.urlTransform[service] !== undefined) {
+      const r = this.services?.urlTransform[service](url, data)
+      url = r[0]
+      data = r[1]
+    }
+
+    if (url === undefined) {
+      callback(200, ['"no service"', false])
+      return
+    }
+
 
     if (this.services?.urlEncodeData[service] === true) {
       console.log('urlencode')
