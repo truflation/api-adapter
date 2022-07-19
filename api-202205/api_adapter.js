@@ -131,7 +131,7 @@ class ApiAdapter {
       return
     }
 
-    if (this?.services?.func[service] !== undefined) {
+    if (this?.services?.func?.[service] !== undefined) {
       this.services.func[service](req, res)
       return
     }
@@ -166,19 +166,17 @@ class ApiAdapter {
       data = {}
     }
 
-    let url = this.services?.urlPost[service]
+    let url = this.services?.urlPost?.[service]
     let method = 'post'
     if (url === undefined) {
       method = 'get'
-      url = this.services?.urlGet[service]
+      url = this.services?.urlGet?.[service]
     }
-    if (this.services?.urlTransform[service] !== undefined) {
-      const r = this.services?.urlTransform[service](url, data)
-      url = r[0]
-      data = r[1]
-      if (r.length > 2) {
-        method = r[2]
-      }
+    if (this.services?.urlTransform?.[service] !== undefined) {
+      const r = this.services?.urlTransform?.[service](url, data)
+      url = r?.[0]
+      data = r?.[1]
+      method = r?.[2]
     }
 
     if (url === undefined) {
@@ -187,7 +185,7 @@ class ApiAdapter {
     }
 
 
-    if (this.services?.urlEncodeData[service] === true) {
+    if (this.services?.urlEncodeData?.[service] === true) {
       console.log('urlencode')
       url = url + "?" + serialize(data)
       console.log(url)
