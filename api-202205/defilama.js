@@ -5,7 +5,7 @@
 const _ = require('lodash');
 
 function defilama_transform(url, data) {
-  method = "get"
+  let method = "get"
   if (data?.service === undefined) {
     return [url, data]
   }
