@@ -223,7 +223,6 @@ class ApiAdapter {
 }
 
 async function echoFunc (req, res) {
-  const service = req.body?.service
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
@@ -241,7 +240,6 @@ async function echoFunc (req, res) {
 }
 
 async function fuzzFunc (req, res) {
-  const service = req.body?.service
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
@@ -259,7 +257,6 @@ async function fuzzFunc (req, res) {
 }
 
 async function stub1Func (req, res) {
-  const service = req.body?.service
   console.log('POST Data: ', req.body)
   let data = req.body.data === undefined ? {} : req.body.data
   if (typeof data === 'string' || data instanceof String) {
