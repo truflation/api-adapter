@@ -6,8 +6,15 @@
 
 const { ApiAdapter, echoFunc, stub1Func, fuzzFunc } =
       require('./api_adapter')
-
 const { add_defilama } = require('./defilama')
+require('dotenv').config()
+
+const truflation_api_host =
+      process.env.TRUFLATION_API_HOST ||
+      'https://api.truflation.com'
+const truflation_nft_host =
+      process.env.TRUFLATION_NFT_HOST ||
+      'https://truflation-dev-8080.hydrogenx.live'
 
 function add_location(url, data) {
   if (data?.location === undefined) {
@@ -27,12 +34,12 @@ function add_location(url, data) {
 
 let services = {
   urlPost: {
-    'nft-index': 'https://truflation-dev-8080.hydrogenx.live/nft-calc/index-value'
+    'nft-index': `${truflation_nft_host}/nft-calc/index-value`
   },
   urlGet: {
-    'truflation/current': 'https://api.truflation.com/current',
-    'truflation/at-date': 'https://api.truflation.com/at-date',
-    'truflation/range': 'https://api.truflation.com/range',
+    'truflation/current': `${truflation_api_host}/current`,
+    'truflation/at-date': `${truflation_api_host}/at-date`,
+    'truflation/range': `${truflation_api_host}/range`,
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
     'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index'
   },
@@ -56,7 +63,6 @@ let services = {
 // subject to change
 
 services = add_defilama(services)
-
 const app = new ApiAdapter(services)
 app.listen(process.env.EA_PORT || 8081)
 const fuzz = {

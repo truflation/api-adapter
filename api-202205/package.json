@@ -11,8 +11,10 @@
   "dependencies": {
     "@chainlink/external-adapter": "^0.2.3",
     "cbor": "^8.1.0",
+    "dotenv": "^16.0.1",
     "ipfs-http-client": "^56.0.3",
     "json-keypath": "^0.1.2",
+    "lodash": "^4.17.21",
     "web3-eth-abi": "^1.7.3",
     "whatwg-url": "^11.0.0"
   },
