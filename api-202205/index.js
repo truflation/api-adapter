@@ -7,7 +7,25 @@
 const { ApiAdapter, echoFunc, stub1Func, fuzzFunc } =
       require('./api_adapter')
 
-const services = {
+const { add_defilama } = require('./defilama')
+
+function add_location(url, data) {
+  if (data?.location === undefined) {
+    return [url, data]
+  }
+  if (data.location === 'us') {
+    delete data.location
+    return [url, data]
+  }
+  if (data.location.match(/^[a-z]+$/)) {
+    url += "/"
+    url += data.location
+    delete data.location
+  }
+  return [url, data]
+}
+
+let services = {
   urlPost: {
     'nft-index': 'https://truflation-dev-8080.hydrogenx.live/nft-calc/index-value'
   },
@@ -26,21 +44,7 @@ const services = {
     'nuon/static-index': true
   },
   urlTransform: {
-    'truflation/at-date': (url, data) => {
-      if (data?.location === undefined) {
-        return (url, data)
-      }
-      if (data.location === 'us') {
-        delete data.location
-        return (url, data)
-      }
-      if (data.location.match(/^[a-z]+$/)) {
-        url += "/"
-        url += data.location
-        delete data.location
-      }
-      return (url, data)
-    }
+    'truflation/at-date': add_location
   },
   func: {
     echo: echoFunc,
@@ -50,6 +54,9 @@ const services = {
 }
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
+
+services = add_defilama(services)
+
 const app = new ApiAdapter(services)
 app.listen(process.env.EA_PORT || 8081)
 const fuzz = {

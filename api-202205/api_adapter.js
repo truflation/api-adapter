@@ -172,11 +172,13 @@ class ApiAdapter {
       method = 'get'
       url = this.services?.urlGet[service]
     }
-
     if (this.services?.urlTransform[service] !== undefined) {
       const r = this.services?.urlTransform[service](url, data)
       url = r[0]
       data = r[1]
+      if (r.length > 2) {
+        method = r[2]
+      }
     }
 
     if (url === undefined) {
@@ -189,11 +191,12 @@ class ApiAdapter {
       console.log('urlencode')
       url = url + "?" + serialize(data)
       console.log(url)
-      data = {}
+      data = undefined
     }
 
     console.log('Url: ', url)
     console.log('Data: ', data)
+    console.log('Method: ', method)
     Requester.request(
       {
         method,
