@@ -22,7 +22,7 @@ const defilama_services = {
   urlGet: {
     'defilama/tvl': 'https://api.llama.fi',
     'defilama/coins': 'https://coins.llama.fi',
-    'defilama/stablecoins': 'https//stablecoins.llama.fi',
+    'defilama/stablecoins': 'https://stablecoins.llama.fi',
     'defilama/yields': 'https://yields.llama.fi'
   },
   urlTransform: {
