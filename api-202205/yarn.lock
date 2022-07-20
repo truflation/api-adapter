@@ -2590,11 +2590,6 @@ json-bigint@^0.3.0:
   dependencies:
     bignumber.js "^9.0.0"
 
-json-keypath@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.npmjs.org/json-keypath/-/json-keypath-0.1.2.tgz"
-  integrity sha512-/VXxUXqTqOtzA//b8lOGSXSimxUgCgrb0Z7psDe4TNTvnGmHtm9KURy9F9GNMySSBKHdxzLYJDlV6X+JsdU2PA==
-
 json-schema-traverse@^0.4.1:
   version "0.4.1"
   resolved "https://registry.npmjs.org/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz"

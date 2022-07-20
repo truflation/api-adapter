@@ -8,7 +8,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const { Requester } = require('@chainlink/external-adapter')
 const Web3EthAbi = require('web3-eth-abi')
-const JSONKeyPath = require('json-keypath')
 const cbor = require('cbor')
 const { create } = require('ipfs-http-client')
 const client = create('https://ipfs.infura.io:5001/api/v0')
@@ -21,6 +20,35 @@ function isNumeric(val) {
   return !Array.isArray(val) && (val - parseFloat(val) + 1) >= 0;
 }
 
+function getValue (object, key, strict) {
+  if (object instanceof Object && typeof key === 'string') {
+    var a = key.split('.');
+    for (var i = 0; i < a.length; i++ ) {
+      var k = a[i];
+
+      if (k.includes('=')) {
+        const s = k.split('=', 2)
+        for (const i of object) {
+          if (i[s[0]] == s[1]) {
+            object = i
+            break
+          }
+        }
+      } else if (k in object) {
+	object = object[k];
+      } else {
+	if (strict === true) {
+	  throw new Error('Invalid path');
+	} else {
+	  return undefined;
+	}
+      }
+    }
+    return object;
+  }
+}
+
+
 async function extractData (data, header, fuzz=false) {
   const keypath = header.keypath
   const multiplier = header.multiplier
@@ -30,7 +58,7 @@ async function extractData (data, header, fuzz=false) {
   let json = true
   if (keypath !== undefined &&
       keypath !== '') {
-    data = JSONKeyPath.getValue(
+    data = getValue(
       data, keypath
     )
   }

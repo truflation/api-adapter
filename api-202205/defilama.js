@@ -17,7 +17,7 @@ class DefiLamaAdapter {
     if (typeof service !== 'string') {
       return undefined;
     }
-    const s = service.split('/', 3)
+    const s = service.split('/')
     if (s?.[0] !== 'defilama') {
       return undefined
     }
@@ -25,7 +25,7 @@ class DefiLamaAdapter {
     if ( url === undefined) {
       return undefined
     }
-    const subservice = s?.[2]
+    const subservice = s.slice(2).join('/')
     if (subservice === 'prices') {
       url += '/' + subservice
       method = 'post'
