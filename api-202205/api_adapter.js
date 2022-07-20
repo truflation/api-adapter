@@ -116,6 +116,10 @@ class ApiAdapter {
       services.urlGet = {}
     }
 
+    if (services?.handlers === undefined) {
+      services.handlers = []
+    }
+
     this.services = services
     this.app = express()
     this.app.use(bodyParser.json())
@@ -154,9 +158,8 @@ class ApiAdapter {
 
   async createRequest (input, callback) {
     const service = input.service
-
-
     let data = input.data
+
     if ((typeof data === 'string' ||
          data instanceof String) &&
         data.replace(/\s/g, '').length) {
@@ -179,18 +182,29 @@ class ApiAdapter {
       method = r?.[2]
     }
 
-    if (url === undefined) {
-      callback(200, ['"no service"', false])
-      return
-    }
-
-
     if (this.services?.urlEncodeData?.[service] === true) {
       console.log('urlencode')
       url = url + "?" + serialize(data)
       console.log(url)
       data = undefined
     }
+
+    for (const i of this.services.handlers) {
+      const r = i.handle(service, data, method)
+      console.log(r)
+      if (r !== undefined) {
+        url = r?.[0]
+        data = r?.[1]
+        method = r?.[2]
+        break
+      }
+    }
+
+    if (url === undefined) {
+      callback(200, ['"no service"', false])
+      return
+    }
+
 
     console.log('Url: ', url)
     console.log('Data: ', data)
@@ -284,5 +298,6 @@ module.exports = {
   extractData,
   echoFunc,
   stub1Func,
-  fuzzFunc
+  fuzzFunc,
+  serialize
 }

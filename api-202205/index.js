@@ -6,7 +6,7 @@
 
 const { ApiAdapter, echoFunc, stub1Func, fuzzFunc } =
       require('./api_adapter')
-const { add_defilama } = require('./defilama')
+const { DefiLamaAdapter } = require('./defilama')
 require('dotenv').config()
 
 const truflation_api_host =
@@ -57,12 +57,14 @@ let services = {
     echo: echoFunc,
     stub1: stub1Func,
     fuzz: fuzzFunc
-  }
+  },
+  handlers: [
+    new DefiLamaAdapter()
+  ]
 }
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
-services = add_defilama(services)
 const app = new ApiAdapter(services)
 app.listen(process.env.EA_PORT || 8081)
 const fuzz = {

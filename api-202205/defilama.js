@@ -2,47 +2,42 @@
 // Copyright 2022 - Laguna Labs
 //
 
-const _ = require('lodash');
+const { serialize } = require('./api_adapter')
 
-function defilama_transform(url, data) {
-  let method = "get"
-  if (data?.service === undefined) {
-    return [url, data]
-  }
-  if (data.service === "prices") {
-    method = "post"
-  }
-  url += "/" + data.service
-  delete data.service
-  console.log(url, data, method)
-  return [url, data, method]
+const endpoints = {
+  'tvl': 'https://api.llama.fi',
+  'coins': 'https://coins.llama.fi',
+  'stablecoins': 'https://stablecoins.llama.fi',
+  'yields': 'https://yields.llama.fi'
 }
 
-const defilama_services = {
-  urlGet: {
-    'defilama/tvl': 'https://api.llama.fi',
-    'defilama/coins': 'https://coins.llama.fi',
-    'defilama/stablecoins': 'https://stablecoins.llama.fi',
-    'defilama/yields': 'https://yields.llama.fi'
-  },
-  urlTransform: {
-    'defilama/tvl':  defilama_transform,
-    'defilama/coins': defilama_transform,
-    'defilama/stablecoins': defilama_transform,
-    'defilama/yields': defilama_transform    
-  },
-  urlEncodeData: {
-    'defilama/tvl': true,
-    'defilama/coins': true,
-    'defilama/stablecoins': true,
-    'defilama/yields': true
+class DefiLamaAdapter {
+  handle(service, data, method) {
+    method = 'get'
+    if (typeof service !== 'string') {
+      return undefined;
+    }
+    const s = service.split('/', 3)
+    if (s?.[0] !== 'defilama') {
+      return undefined
+    }
+    let url = endpoints[s?.[1]]
+    if ( url === undefined) {
+      return undefined
+    }
+    const subservice = s?.[2]
+    if (subservice === 'prices') {
+      url += '/' + subservice
+      method = 'post'
+    } else {
+      url += '/' + subservice
+      url += "?" + serialize(data)
+      data = undefined
+    }
+    return [ url, data, method ]
   }
-}
-
-function add_defilama(services) {
-  return _.merge(services, defilama_services)
 }
 
 module.exports = {
-  add_defilama
+  DefiLamaAdapter
 }
