@@ -260,7 +260,11 @@ class ApiAdapter {
   }
 
   listen (port) {
-    this.app.listen(port, () => console.log(`Listening on port ${port}!`))
+    this.listener =
+      this.app.listen(port, () => console.log(`Listening on port ${port}!`))
+  }
+  close() {
+    this.listener.close()
   }
 }
 
