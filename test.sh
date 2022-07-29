@@ -56,28 +56,3 @@ curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{
 ]}
 }'
 
-curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "truflation/current"}'
-
-curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "echo",
-"data": {"foo": 1024},
-"keypath": "foo",
-"abi": "uint256"
-}'
-
-curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "echo",
-"data": {"foo": [1024, 2048]},
-"keypath": "foo",
-"abi": "uint256[]"
-}'
-
-curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "echo",
-"data": {"foo": [30, 10530, "string"]},
-"keypath": "foo",
-"abi": "(uint256, uint256, string)"
-}'
-
-curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "echo",
-"data": {"foo": [30, 10530, "string"]},
-"keypath": "foo",
-"abi": "cbor"
-}'
