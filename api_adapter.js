@@ -157,18 +157,19 @@ class ApiAdapter {
   }
 
   async process (req, res) {
-    const service = req.body?.service
+    let body = req.body
+    const service = body?.service
     if (service === undefined) {
       res.status(200).json({'error': 'No service'})
       return
     }
 
     if (this?.services?.func?.[service] !== undefined) {
-      this.services.func[service](req, res)
+      this.services.func[service](body, res)
       return
     }
 
-    this.createRequest(req.body, (status, result) => {
+    this.createRequest(body, (status, result) => {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
       try {
@@ -268,14 +269,13 @@ class ApiAdapter {
   }
 }
 
-async function echoFunc (req, res) {
-  console.log('POST Data: ', req.body)
-  let data = req.body.data === undefined ? {} : req.body.data
+async function echoFunc (body, res) {
+  let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data)
   }
   const [retval, json] = await extractData(
-    data, req.body
+    data, body
   )
   if (json) {
     res.json(retval)
@@ -285,14 +285,13 @@ async function echoFunc (req, res) {
   }
 }
 
-async function fuzzFunc (req, res) {
-  console.log('POST Data: ', req.body)
-  let data = req.body.data === undefined ? {} : req.body.data
+async function fuzzFunc (body, res) {
+  let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data)
   }
   const [retval, json] = await extractData(
-    data, req.body, true
+    data, body, true
   )
   if (json) {
     res.json(retval)
@@ -302,9 +301,8 @@ async function fuzzFunc (req, res) {
   }
 }
 
-async function stub1Func (req, res) {
-  console.log('POST Data: ', req.body)
-  let data = req.body.data === undefined ? {} : req.body.data
+async function stub1Func (body, res) {
+  let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data)
   }
@@ -315,7 +313,7 @@ async function stub1Func (req, res) {
     data[x] = Math.random() * (range[1] - range[0]) + range[0]
   })
   const [retval, json] = await extractData(
-    data, req.body, false
+    data, body, false
   )
   if (json) {
     res.json(retval)
