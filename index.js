@@ -66,7 +66,7 @@ let services = {
 // subject to change
 
 const app = new ApiAdapter(services)
-app.listen(process.env.EA_PORT || 8081)
+
 const fuzz = {
   'fuzz' : {
     'nft-index': true,
@@ -76,7 +76,15 @@ const fuzz = {
   }
 }
 
-const fuzzed_services = {...services, ...fuzz}
-const fuzzed_app = new ApiAdapter(fuzzed_services)
-fuzzed_app.listen(process.env.EA_FUZZ_PORT || 8082)
+const randomized_services = {...services, ...fuzz}
+const randomized_app = new ApiAdapter(randomized_services)
 
+if (require.main === module) {
+  app.listen(process.env.EA_PORT || 8081)
+  randomized_app.listen(process.env.EA_FUZZ_PORT || 8082)
+}
+
+module.exports = {
+  services,
+  randomized_services
+}
