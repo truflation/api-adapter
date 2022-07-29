@@ -42,7 +42,7 @@ describe('Test', () => {
     "abi": "uint256",
     "multiplier": "1000000000000000000",
     "keypath": "peggedAssets.symbol=USDT.circulating.peggedUSD"
-  }, 0x0000000000000000000000000000000000000000d6d72c191b03700000000000)).timeout(20000)
+  }, undefined)).timeout(20000)
   it('connect', test_packet({
     "service": "defilama/stablecoins/stablecoincharts/all",
     "abi": "uint256",
