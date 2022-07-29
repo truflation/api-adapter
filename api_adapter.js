@@ -154,10 +154,27 @@ class ApiAdapter {
     this.app.post('/', (req, res) => {
       this.process(req, res)
     })
+    this.permission_func = (body) => {
+      return true;
+    }
+  }
+
+  setPermissionFunc(func) {
+    this.permission_func = func
   }
 
   async process (req, res) {
     let body = req.body
+    if (!this.permission_func(body)) {
+      res.status(200).json({'error': 'Permission denied'})
+      return
+    }
+
+    if (body.requestId !== undefined) {
+      console.log(body)
+      body = cbor.decode(body.data)
+    }
+
     const service = body?.service
     if (service === undefined) {
       res.status(200).json({'error': 'No service'})
@@ -188,7 +205,6 @@ class ApiAdapter {
   async createRequest (input, callback) {
     const service = input.service
     let data = input.data
-
     if ((typeof data === 'string' ||
          data instanceof String) &&
         data.replace(/\s/g, '').length) {
