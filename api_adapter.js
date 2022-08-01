@@ -165,14 +165,9 @@ class ApiAdapter {
 
   async process (req, res) {
     let body = req.body
-    if (!this.permission_func(body)) {
+    if (!this.permission_func(body?.meta)) {
       res.status(200).json({'error': 'Permission denied'})
       return
-    }
-
-    if (body.requestId !== undefined) {
-      console.log(body)
-      body = cbor.decode(body.data)
     }
 
     const service = body?.service
