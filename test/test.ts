@@ -48,12 +48,13 @@ describe('Test', () => {
     "data": {"date" : "2021-10-10"},
     "abi": "json"
   }, {
-  currentInflationIndex: 136.82006247089433,
+  currentInflationIndex: 136.8755398909316,
   date: '2021-10-10',
   yearAgoDate: '2020-10-10',
-  yearAgoInflationIndex: 127.2394421757194,
-  yearOverYearInflation: 7.529599416149551
-  }))
+  yearAgoInflationIndex: 127.34693009740337,
+  yearOverYearInflation: 7.482402431091287
+}
+))
   it('echo 1', test_packet({
     "service": "echo",
     "data": {"foo": 1024},
