@@ -12,7 +12,7 @@ const endpoints = {
 }
 
 class DefiLamaAdapter {
-  handle(service, data, method) {
+  handle(service, data) {
     method = 'get'
     if (typeof service !== 'string') {
       return undefined;

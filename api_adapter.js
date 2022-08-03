@@ -230,7 +230,7 @@ class ApiAdapter {
     }
 
     for (const i of this.services.handlers) {
-      const r = i.handle(service, data, method)
+      const r = i.handle(service, data)
       console.log(r)
       if (r !== undefined) {
         url = r?.[0]
