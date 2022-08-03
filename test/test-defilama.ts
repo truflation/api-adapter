@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 import { ApiAdapter } from '../api_adapter'
 process.env.TRUFLATION_API_HOST='https://truflation-api.hydrogenx.tk'
-import { services, randomized_services } from '../index'
+import { DefiLamaAdapter } from '../defilama'
 import axios from 'axios'
 import assert from 'assert'
 
 require('dotenv').config()
 
-const app = new ApiAdapter(services)
+const app = new ApiAdapter({})
+app.register_handler(new DefiLamaAdapter())
 const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
 
 function test_packet(packet, response) {

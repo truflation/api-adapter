@@ -12,7 +12,7 @@ USER node
 RUN yarn --frozen-lockfile
 
 COPY --chown=node:node . .
-RUN cp servers/index-${CONFIG}.js index.js
+RUN ln -sf servers/index-${CONFIG}.js index.js
 EXPOSE 8081
 EXPOSE 8082
 

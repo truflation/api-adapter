@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { ApiAdapter } from '../api_adapter'
 process.env.TRUFLATION_API_HOST='https://truflation-api.hydrogenx.tk'
-import { services, randomized_services } from '../index'
+import { services, randomized_services } from '../services'
 import axios from 'axios'
 import assert from 'assert'
 

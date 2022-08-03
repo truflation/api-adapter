@@ -144,11 +144,8 @@ class ApiAdapter {
       services.urlGet = {}
     }
 
-    if (services?.handlers === undefined) {
-      services.handlers = []
-    }
-
     this.services = services
+    this.services.handlers = []
     this.app = express()
     this.app.use(bodyParser.json())
     this.app.post('/', (req, res) => {
@@ -161,6 +158,10 @@ class ApiAdapter {
 
   setPermissionFunc(func) {
     this.permission_func = func
+  }
+
+  register_handler(h) {
+    this.services.handlers.push(h)
   }
 
   async process (req, res) {
