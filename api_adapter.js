@@ -151,13 +151,10 @@ class ApiAdapter {
     this.app.post('/', (req, res) => {
       this.process(req, res)
     })
-    this.permission_func = (body) => {
-      return true;
-    }
   }
 
-  setPermissionFunc(func) {
-    this.permission_func = func
+  getPermission(body) {
+    return true
   }
 
   register_handler(h) {
@@ -166,7 +163,7 @@ class ApiAdapter {
 
   async process (req, res) {
     let body = req.body
-    if (!this.permission_func(body?.meta)) {
+    if (!this.getPermission(body)) {
       res.status(200).json({'error': 'Permission denied'})
       return
     }
@@ -245,7 +242,6 @@ class ApiAdapter {
       callback(200, ['"no service"', false])
       return
     }
-
 
     console.log('Url: ', url)
     console.log('Data: ', data)
@@ -332,6 +328,16 @@ async function stub1Func (body, res) {
   } else {
     res.write(retval)
     res.end(undefined, 'binary')
+  }
+}
+
+class PermissionedApiAdapter {
+  constructor (services, whiteList) {
+    super(services)
+    this.whiteList = whiteList
+  }
+  getPermission(body) {
+    return whiteList.includes(this.body?.meta?.sender)
   }
 }
 
