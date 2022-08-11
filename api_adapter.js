@@ -331,7 +331,7 @@ async function stub1Func (body, res) {
   }
 }
 
-class PermissionedApiAdapter {
+class PermissionedApiAdapter extends ApiAdapter {
   constructor (services, whiteList) {
     super(services)
     this.whiteList = whiteList
