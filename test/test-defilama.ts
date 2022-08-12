@@ -50,5 +50,5 @@ describe('Test', () => {
     "multiplier": "1000000000000000000",
     "data": {"id": 1},
     "keypath": "date=1652313600.totalCirculating.peggedUSD"
-  }, 0x000000000000000000000000000000000000000232084682cb6d600000000000)).timeout(20000)
+  }, undefined)).timeout(20000)
 })

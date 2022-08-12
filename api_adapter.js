@@ -164,7 +164,7 @@ class ApiAdapter {
   async process (req, res) {
     let body = req.body
     if (!this.getPermission(body)) {
-      res.status(200).json({'error': 'Permission denied'})
+      res.status(200).json({'error': 'permission denied'})
       return
     }
 
@@ -337,11 +337,12 @@ class PermissionedApiAdapter extends ApiAdapter {
     this.whiteList = whiteList
   }
   getPermission(body) {
-    return whiteList.includes(this.body?.meta?.sender)
+    return this.whiteList.includes(this.body?.meta?.sender)
   }
 }
 
 module.exports = {
+  PermissionedApiAdapter,
   ApiAdapter,
   extractData,
   echoFunc,

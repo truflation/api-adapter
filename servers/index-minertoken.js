@@ -24,6 +24,10 @@ let services = {
 
 const app = new PermissionedApiAdapter(services, [])
 
+module.exports = {
+  app
+}
+
 if (require.main === module) {
   app.listen(process.env.EA_PORT || 8081)
 }

@@ -20,6 +20,10 @@ app.register_handler(new DefiLamaAdapter())
 const randomized_app = new ApiAdapter(randomized_services)
 randomized_app.register_handler(new DefiLamaAdapter())
 
+module.exports = {
+  app, randomized_app
+}
+
 if (require.main === module) {
   app.listen(process.env.EA_PORT || 8081)
   randomized_app.listen(process.env.EA_FUZZ_PORT || 8082)
