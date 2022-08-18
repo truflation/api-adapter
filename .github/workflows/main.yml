@@ -73,4 +73,4 @@ jobs:
           username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
           key: ${{ secrets.ANSIBLE_SERVER_KEY }}
           port: ${{ secrets.ANSIBLE_SERVER_PORT }}
-          script: ansible-playbook -i /opt/truflation-api-adapter/hosts -e  /opt/truflation-api-adapter/production/deploy.yml;
+          script: ansible-playbook -i /opt/truflation-api-adapter/hosts /opt/truflation-api-adapter/production/deploy.yml;
