@@ -1,0 +1,75 @@
+name: Api adapter pipeline
+
+on:
+  push:
+    branches: ['develop', 'production']
+  pull_request:
+    branches: ['develop', 'production']
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [17.x]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
+      - run: yarn install
+      - run: yarn test
+  buildDevelop:
+    name: Build/Develop
+    if: github.event.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: build image through ansible server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
+          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
+          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
+          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
+          script: ansible-playbook -i /opt/truflation-api-adapter/hosts -e version=${{ steps.commit.outputs.long }} /opt/truflation-api-adapter/develop/build.yml;
+  buildProduction:
+    name: Build/Production
+    if: github.event.ref == 'refs/heads/production'
+    runs-on: ubuntu-latest
+    steps:
+      - name: build image through ansible server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
+          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
+          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
+          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
+          script: ansible-playbook -i /opt/truflation-api-adapter/hosts -e version=${{ steps.commit.outputs.long }} /opt/truflation-api-adapter/production/build.yml;
+  deployDevelop:
+    name: Deploy/Develop
+    needs: buildDevelop
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy through ansible server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
+          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
+          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
+          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
+          script: ansible-playbook -i /opt/truflation-api-adapter/hosts /opt/truflation-api-adapter/develop/deploy.yml;
+  deployProduction:
+    name: Deploy/Production
+    needs: buildProduction
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy through ansible server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
+          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
+          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
+          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
+          script: ansible-playbook -i /opt/truflation-api-adapter/hosts -e  /opt/truflation-api-adapter/production/deploy.yml;
