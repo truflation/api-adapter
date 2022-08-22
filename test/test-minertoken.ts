@@ -30,8 +30,6 @@ describe('Test', () => {
   after(async () => {
     app.close()
   })
-  it('bad service', test_packet({
-  }, {'error': 'permission denied'}))
 })
 
 
