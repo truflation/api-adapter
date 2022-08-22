@@ -10,12 +10,10 @@ require('dotenv').config()
 
 let services = {
   urlGet: {
-    'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
-    'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index'
+    'minertoken': 'http://api.truflation.io:2222/mt'
   },
   urlEncodeData: {
-    'nuon/dynamic-index': true,
-    'nuon/static-index': true
+    'minertoken': true
   }
 }
 

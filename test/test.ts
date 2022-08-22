@@ -77,6 +77,12 @@ describe('Test', () => {
     },
     undefined
   ))
+  it('minertoken', test_packet(
+    {
+      "service": "minertoken"
+    },
+    undefined
+  ))
 })
 
 
