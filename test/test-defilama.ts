@@ -37,7 +37,7 @@ describe('Test', () => {
   it('chains', test_packet({
     "service": "defilama/tvl/chains",
     "abi": "json"
-  }, undefined))
+  }, undefined)).timeout(20000)
   it('connect', test_packet({
     "service": "defilama/stablecoins/stablecoins",
     "abi": "uint256",
