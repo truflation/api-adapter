@@ -4,7 +4,7 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-const { PermissionedApiAdapter } = require('../api_adapter')
+const { ApiAdapter } = require('../api_adapter')
 
 require('dotenv').config()
 
@@ -20,7 +20,7 @@ let services = {
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
-const app = new PermissionedApiAdapter(services, [])
+const app = new ApiAdapter(services)
 
 module.exports = {
   app
