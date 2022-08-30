@@ -4,25 +4,23 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-const { PermissionedApiAdapter } = require('../api_adapter')
+const { ApiAdapter } = require('../api_adapter')
 
 require('dotenv').config()
 
 let services = {
   urlGet: {
-    'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
-    'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index'
+    'minertoken': 'http://api.truflation.io:2222/mt'
   },
   urlEncodeData: {
-    'nuon/dynamic-index': true,
-    'nuon/static-index': true
+    'minertoken': true
   }
 }
 
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
-const app = new PermissionedApiAdapter(services, [])
+const app = new ApiAdapter(services)
 
 module.exports = {
   app

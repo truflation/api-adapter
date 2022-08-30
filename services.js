@@ -39,14 +39,16 @@ let services = {
     'truflation/at-date': `${truflation_api_host}/at-date`,
     'truflation/range': `${truflation_api_host}/range`,
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
-    'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index'
+    'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index',
+    'minertoken': 'http://api.truflation.io:2222/mt'
   },
   urlEncodeData: {
     'truflation/current': true,
     'truflation/at-date': true,
     'truflation/range': true,
     'nuon/dynamic-index': true,
-    'nuon/static-index': true
+    'nuon/static-index': true,
+    'minertoken': true
   },
   urlTransform: {
     'truflation/at-date': add_location

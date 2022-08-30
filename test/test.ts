@@ -45,7 +45,7 @@ describe('Test', () => {
     "data": {"date" : "2021-10-10"},
     "abi": "json"
   }, undefined
-))
+                             )).timeout(20000)
   it('echo 1', test_packet({
     "service": "echo",
     "data": {"foo": 1024},
@@ -74,6 +74,12 @@ describe('Test', () => {
       "data": {"foo": [30, 10530, "string"]},
       "keypath": "foo",
       "abi": "cbor"
+    },
+    undefined
+  ))
+  it('minertoken', test_packet(
+    {
+      "service": "minertoken"
     },
     undefined
   ))
