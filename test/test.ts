@@ -82,7 +82,7 @@ describe('Test', () => {
       "service": "minertoken"
     },
     undefined
-  ))
+  )).timeout(20000)
 })
 
 
