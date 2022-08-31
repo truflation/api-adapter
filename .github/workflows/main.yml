@@ -63,7 +63,7 @@ jobs:
             CONFIG: "main"
 
       - name: Extract metadata (tags, labels) for Docker (minertoken)
-        id: meta
+        id: meta-minertoken
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:dev
@@ -73,12 +73,12 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:dev
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta-minertoken.outputs.labels }}
           build-args: |
             CONFIG: "minertoken"
 
       - name: Extract metadata (tags, labels) for Docker (nuon)
-        id: meta
+        id: meta-nuon
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:dev
@@ -88,7 +88,7 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:dev
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta-nuon.outputs.labels }}
           build-args: |
             CONFIG: "nuon"
 
@@ -127,7 +127,7 @@ jobs:
             CONFIG: "main"
 
       - name: Extract metadata (tags, labels) for Docker (minertoken)
-        id: meta
+        id: meta-minertoken
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:latest
@@ -137,12 +137,12 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:latest
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta-minertoken.outputs.labels }}
           build-args: |
             CONFIG: "minertoken"
 
       - name: Extract metadata (tags, labels) for Docker (nuon)
-        id: meta
+        id: meta-nuon
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:latest
@@ -152,6 +152,6 @@ jobs:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:latest
-          labels: ${{ steps.meta.outputs.labels }}
+          labels: ${{ steps.meta-nuon.outputs.labels }}
           build-args: |
             CONFIG: "nuon"
