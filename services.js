@@ -25,7 +25,7 @@ function add_location(url, data) {
 
 const truflation_api_host =
       process.env.TRUFLATION_API_HOST ||
-      'https://api.truflation.com'
+      'https://api.truflation.io'
 const truflation_nft_host =
       process.env.TRUFLATION_NFT_HOST ||
       'https://truflation-dev-8080.hydrogenx.live'
