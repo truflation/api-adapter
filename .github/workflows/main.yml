@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: ['develop', 'production']
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: truflation/api-adapter/${{ github.ref_name }}
+  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+
 jobs:
   test:
     name: Test
@@ -26,51 +31,62 @@ jobs:
     name: Build/Develop
     if: github.event.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     steps:
-      - name: build image through ansible server
-        uses: appleboy/ssh-action@master
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
-          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
-          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
-          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
-          script: ansible-playbook -i /opt/truflation-api-adapter/hosts -e version=${{ steps.commit.outputs.long }} /opt/truflation-api-adapter/develop/build.yml;
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
+          labels: ${{ steps.meta.outputs.labels }}
   buildProduction:
     name: Build/Production
     if: github.event.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
-      - name: build image through ansible server
-        uses: appleboy/ssh-action@master
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
-          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
-          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
-          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
-          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
-          script: ansible-playbook -i /opt/truflation-api-adapter/hosts -e version=${{ steps.commit.outputs.long }} /opt/truflation-api-adapter/production/build.yml;
-  deployDevelop:
-    name: Deploy/Develop
-    needs: buildDevelop
-    runs-on: ubuntu-latest
-    steps:
-      - name: deploy through ansible server
-        uses: appleboy/ssh-action@master
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
-          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
-          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
-          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
-          script: ansible-playbook -i /opt/truflation-api-adapter/hosts /opt/truflation-api-adapter/develop/deploy.yml;
-  deployProduction:
-    name: Deploy/Production
-    needs: buildProduction
-    runs-on: ubuntu-latest
-    steps:
-      - name: deploy through ansible server
-        uses: appleboy/ssh-action@master
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
-          host: ${{ secrets.ANSIBLE_SERVER_HOST }}
-          username: ${{ secrets.ANSIBLE_SERVER_USERNAME }}
-          key: ${{ secrets.ANSIBLE_SERVER_KEY }}
-          port: ${{ secrets.ANSIBLE_SERVER_PORT }}
-          script: ansible-playbook -i /opt/truflation-api-adapter/hosts /opt/truflation-api-adapter/production/deploy.yml;
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          labels: ${{ steps.meta.outputs.labels }}
