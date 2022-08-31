@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -48,49 +48,49 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker (main)
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
 
       - name: Build and push Docker image (main)
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:dev
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            CONFIG: "main"
+            CONFIG=main
 
       - name: Extract metadata (tags, labels) for Docker (minertoken)
         id: meta-minertoken
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:dev
       - name: Build and push Docker image (minertoken)
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:dev
           labels: ${{ steps.meta-minertoken.outputs.labels }}
           build-args: |
-            CONFIG: "minertoken"
+            CONFIG=minertoken
 
       - name: Extract metadata (tags, labels) for Docker (nuon)
         id: meta-nuon
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:dev
       - name: Build and push Docker image (nuon)
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:dev
           labels: ${{ steps.meta-nuon.outputs.labels }}
           build-args: |
-            CONFIG: "nuon"
+            CONFIG=nuon
 
   buildProduction:
     name: Build/Production
@@ -104,7 +104,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Log in to the Container registry
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
@@ -112,46 +112,46 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker (main)
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
       - name: Build and push Docker image (main)
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            CONFIG: "main"
+            CONFIG=main
 
       - name: Extract metadata (tags, labels) for Docker (minertoken)
         id: meta-minertoken
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:latest
       - name: Build and push Docker image (minertoken)
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-minertoken:latest
           labels: ${{ steps.meta-minertoken.outputs.labels }}
           build-args: |
-            CONFIG: "minertoken"
+            CONFIG=minertoken
 
       - name: Extract metadata (tags, labels) for Docker (nuon)
         id: meta-nuon
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:latest
       - name: Build and push Docker image (nuon)
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: docker/build-push-action@v3
         with:
           context: .
           push: true
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-nuon:latest
           labels: ${{ steps.meta-nuon.outputs.labels }}
           build-args: |
-            CONFIG: "nuon"
+            CONFIG=nuon
