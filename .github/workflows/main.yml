@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: truflation/api-adapter/${{ github.ref_name }}
+  IMAGE_NAME: truflation/api-adapter
   BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
