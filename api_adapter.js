@@ -12,19 +12,19 @@ const cbor = require('cbor')
 const { create } = require('ipfs-http-client')
 const client = create('https://ipfs.infura.io:5001/api/v0')
 
-function isNumeric(val) {
+function isNumeric (val) {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
   // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
   // subtraction forces infinities to NaN
   // adding 1 corrects loss of precision from parseFloat (#15100)
-  return !Array.isArray(val) && (val - parseFloat(val) + 1) >= 0;
+  return !Array.isArray(val) && (val - parseFloat(val) + 1) >= 0
 }
 
 function getValue (object, key, strict) {
   if (object instanceof Object && typeof key === 'string') {
-    var a = key.split('.');
-    for (var i = 0; i < a.length; i++ ) {
-      var k = a[i];
+    const a = key.split('.')
+    for (let i = 0; i < a.length; i++) {
+      const k = a[i]
 
       if (k.includes('=')) {
         const s = k.split('=', 2)
@@ -35,21 +35,20 @@ function getValue (object, key, strict) {
           }
         }
       } else if (k in object) {
-	object = object[k];
+        object = object[k]
       } else {
-	if (strict === true) {
-	  throw new Error('Invalid path');
-	} else {
-	  return undefined;
-	}
+        if (strict === true) {
+	  throw new Error('Invalid path')
+        } else {
+	  return undefined
+        }
       }
     }
-    return object;
+    return object
   }
 }
 
-
-async function extractData (data, header, fuzz=false) {
+async function extractData (data, header, fuzz = false) {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
@@ -66,9 +65,8 @@ async function extractData (data, header, fuzz=false) {
   if (fuzz) {
     console.log('fuzzing')
     const iterate = (obj) => {
-      let r = {}
+      const r = {}
       Object.keys(obj).forEach(key => {
-
         r[key] = obj[key]
         if (isNumeric(obj[key])) {
           const n = +obj[key]
@@ -120,13 +118,14 @@ async function extractData (data, header, fuzz=false) {
   return [data, json]
 }
 
-function serialize(obj) {
-  let str = [];
-  for (var p in obj)
+function serialize (obj) {
+  const str = []
+  for (const p in obj) {
     if (p in obj) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
     }
-  return str.join("&");
+  }
+  return str.join('&')
 }
 
 class ApiAdapter {
@@ -153,24 +152,24 @@ class ApiAdapter {
     })
   }
 
-  getPermission(body) {
+  getPermission (body) {
     return true
   }
 
-  register_handler(h) {
+  register_handler (h) {
     this.services.handlers.push(h)
   }
 
   async process (req, res) {
-    let body = req.body
+    const body = req.body
     if (!this.getPermission(body)) {
-      res.status(200).json({'error': 'permission denied'})
+      res.status(200).json({ error: 'permission denied' })
       return
     }
 
     const service = body?.service
     if (service === undefined) {
-      res.status(200).json({'error': 'No service'})
+      res.status(200).json({ error: 'No service' })
       return
     }
 
@@ -222,7 +221,7 @@ class ApiAdapter {
 
     if (this.services?.urlEncodeData?.[service] === true) {
       console.log('urlencode')
-      url = url + "?" + serialize(data)
+      url = url + '?' + serialize(data)
       console.log(url)
       data = undefined
     }
@@ -272,7 +271,8 @@ class ApiAdapter {
     this.listener =
       this.app.listen(port, () => console.log(`Listening on port ${port}!`))
   }
-  close() {
+
+  close () {
     this.listener.close()
   }
 }
@@ -336,7 +336,8 @@ class PermissionedApiAdapter extends ApiAdapter {
     super(services)
     this.whiteList = whiteList
   }
-  getPermission(body) {
+
+  getPermission (body) {
     return this.whiteList.includes(this.body?.meta?.sender)
   }
 }

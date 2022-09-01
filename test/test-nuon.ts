@@ -7,9 +7,9 @@ import assert from 'assert'
 require('dotenv').config()
 const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
 
-function test_packet(packet, response) {
-  return async() => {
-    const {data, status} = await axios.post(
+function test_packet (packet, response) {
+  return async () => {
+    const { data, status } = await axios.post(
       url,
       packet,
       {
@@ -31,11 +31,8 @@ describe('Test', () => {
     app.close()
   })
   it('bad service', test_packet({
-    "service": "bad service",
-    "data": {"foo": [30, 10530, "string"]},
-    "abi": "ipfs"
-  }, {'error': 'permission denied'}))
+    service: 'bad service',
+    data: { foo: [30, 10530, 'string'] },
+    abi: 'ipfs'
+  }, { error: 'permission denied' }))
 })
-
-
-

@@ -5,24 +5,24 @@
 const { serialize } = require('./api_adapter')
 
 const endpoints = {
-  'tvl': 'https://api.llama.fi',
-  'coins': 'https://coins.llama.fi',
-  'stablecoins': 'https://stablecoins.llama.fi',
-  'yields': 'https://yields.llama.fi'
+  tvl: 'https://api.llama.fi',
+  coins: 'https://coins.llama.fi',
+  stablecoins: 'https://stablecoins.llama.fi',
+  yields: 'https://yields.llama.fi'
 }
 
 class DefiLamaAdapter {
-  handle(service, data) {
+  handle (service, data) {
     let method = 'get'
     if (typeof service !== 'string') {
-      return undefined;
+      return undefined
     }
     const s = service.split('/')
     if (s?.[0] !== 'defilama') {
       return undefined
     }
     let url = endpoints[s?.[1]]
-    if ( url === undefined) {
+    if (url === undefined) {
       return undefined
     }
     const subservice = s.slice(2).join('/')
@@ -31,10 +31,10 @@ class DefiLamaAdapter {
       method = 'post'
     } else {
       url += '/' + subservice
-      url += "?" + serialize(data)
+      url += '?' + serialize(data)
       data = undefined
     }
-    return [ url, data, method ]
+    return [url, data, method]
   }
 }
 

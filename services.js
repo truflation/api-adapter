@@ -7,7 +7,7 @@
 const { echoFunc, stub1Func, fuzzFunc } =
       require('./api_adapter')
 
-function add_location(url, data) {
+function add_location (url, data) {
   if (data?.location === undefined) {
     return [url, data]
   }
@@ -16,7 +16,7 @@ function add_location(url, data) {
     return [url, data]
   }
   if (data.location.match(/^[a-z]+$/)) {
-    url += "/"
+    url += '/'
     url += data.location
     delete data.location
   }
@@ -28,9 +28,9 @@ const truflation_api_host =
       'https://api.truflation.io'
 const truflation_nft_host =
       process.env.TRUFLATION_NFT_HOST ||
-      'https://truflation-dev-8080.hydrogenx.live'
+      'http://nft.truflation.io:8080'
 
-let services = {
+const services = {
   urlPost: {
     'nft-index': `${truflation_nft_host}/nft-calc/index-value`
   },
@@ -40,7 +40,7 @@ let services = {
     'truflation/range': `${truflation_api_host}/range`,
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
     'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index',
-    'minertoken': 'http://api.truflation.io:2222/mt'
+    minertoken: 'http://api.truflation.io:2222/mt'
   },
   urlEncodeData: {
     'truflation/current': true,
@@ -48,7 +48,7 @@ let services = {
     'truflation/range': true,
     'nuon/dynamic-index': true,
     'nuon/static-index': true,
-    'minertoken': true
+    minertoken: true
   },
   urlTransform: {
     'truflation/at-date': add_location
@@ -61,7 +61,7 @@ let services = {
 }
 
 const fuzz = {
-  'fuzz' : {
+  fuzz: {
     'nft-index': true,
     'truflation/at-date': true,
     'truflation/current': true,
@@ -69,7 +69,7 @@ const fuzz = {
   }
 }
 
-const randomized_services = {...services, ...fuzz}
+const randomized_services = { ...services, ...fuzz }
 
 module.exports = {
   services,
