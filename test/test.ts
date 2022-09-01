@@ -2,8 +2,6 @@
 import { app } from '../servers/index-main'
 import axios from 'axios'
 import assert from 'assert'
-process.env.TRUFLATION_API_HOST = 'http://api.truflation.io'
-
 require('dotenv').config()
 const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
 

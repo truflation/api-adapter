@@ -3,8 +3,6 @@ import { ApiAdapter } from '../api_adapter'
 import { DefiLamaAdapter } from '../defilama'
 import axios from 'axios'
 import assert from 'assert'
-process.env.TRUFLATION_API_HOST = 'https://truflation-api.hydrogenx.tk'
-
 require('dotenv').config()
 
 const app = new ApiAdapter({})
