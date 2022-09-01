@@ -2,12 +2,13 @@
 import { app } from '../servers/index-main'
 import axios from 'axios'
 import assert from 'assert'
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
 
-function test_packet (packet, response) {
+function testPacket (packet, response) {
   return async () => {
-    const { data, status } = await axios.post(
+    const { data } = await axios.post(
       url,
       packet,
       {
@@ -22,29 +23,29 @@ function test_packet (packet, response) {
 }
 
 describe('Test', () => {
-  before(async () => {
+  before(() => {
     app.listen(process.env.EA_PORT || 8081)
   })
-  after(async () => {
+  after(() => {
     app.close()
   })
-  it('bad service', test_packet({
+  it('bad service', testPacket({
     service: 'bad service',
     data: { foo: [30, 10530, 'string'] },
     abi: 'ipfs'
   }, 'no service'))
-  /*  it('connect', test_packet({
+  /*  it('connect', testPacket({
       service: "echo",
       data: {"foo": [30, 10530, "string"]},
       abi: "ipfs"
   }, "QmPuQCKrxf6CUwdB4mUghgR9qKZ89DV5Frrjg5ZPAYyvQF")) */
-  it('inflation', test_packet({
+  it('inflation', testPacket({
     service: 'truflation/at-date',
     data: { date: '2021-10-10' },
     abi: 'json'
   }, undefined)).timeout(20000)
 
-  it('nft', test_packet({
+  it('nft', testPacket({
     service: 'nft-index',
     data: { index: 'nft/top11', date: '2021-10-10' },
     abi: 'json'
@@ -55,13 +56,13 @@ describe('Test', () => {
     aMonthChange: 25.03669682169257
   })).timeout(20000)
 
-  it('echo 1', test_packet({
+  it('echo 1', testPacket({
     service: 'echo',
     data: { foo: 1024 },
     keypath: 'foo',
     abi: 'uint256'
   }, 0x0000000000000000000000000000000000000000000000000000000000000400))
-  it('echo 2', test_packet(
+  it('echo 2', testPacket(
     {
       service: 'echo',
       data: { foo: [1024, 2048] },
@@ -69,7 +70,7 @@ describe('Test', () => {
       abi: 'uint256[]'
     }, 0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000800
   ))
-  it('echo 3', test_packet(
+  it('echo 3', testPacket(
     {
       service: 'echo',
       data: { foo: [30, 10530, 'string'] },
@@ -77,7 +78,7 @@ describe('Test', () => {
       abi: '(uint256, uint256, string)'
     }, 0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000292200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000006737472696e670000000000000000000000000000000000000000000000000000
   ))
-  it('echo 4', test_packet(
+  it('echo 4', testPacket(
     {
       service: 'echo',
       data: { foo: [30, 10530, 'string'] },
@@ -86,7 +87,7 @@ describe('Test', () => {
     },
     undefined
   ))
-  it('minertoken', test_packet(
+  it('minertoken', testPacket(
     {
       service: 'minertoken'
     },
