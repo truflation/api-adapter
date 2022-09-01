@@ -3,15 +3,16 @@ import { ApiAdapter } from '../api_adapter'
 import { DefiLamaAdapter } from '../defilama'
 import axios from 'axios'
 import assert from 'assert'
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
 
 const app = new ApiAdapter({})
 app.register_handler(new DefiLamaAdapter())
 const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
 
-function test_packet (packet, response) {
+function testPacket (packet, response) {
   return async () => {
-    const { data, status } = await axios.post(
+    const { data } = await axios.post(
       url,
       packet,
       {
@@ -26,23 +27,23 @@ function test_packet (packet, response) {
 }
 
 describe('Test', () => {
-  before(async () => {
+  before(() => {
     app.listen(process.env.EA_PORT || 8081)
   })
-  after(async () => {
+  after(() => {
     app.close()
   })
-  it('chains', test_packet({
+  it('chains', testPacket({
     service: 'defilama/tvl/chains',
     abi: 'json'
   }, undefined)).timeout(20000)
-  it('connect', test_packet({
+  it('connect', testPacket({
     service: 'defilama/stablecoins/stablecoins',
     abi: 'uint256',
     multiplier: '1000000000000000000',
     keypath: 'peggedAssets.symbol=USDT.circulating.peggedUSD'
   }, undefined)).timeout(20000)
-  it('connect', test_packet({
+  it('connect', testPacket({
     service: 'defilama/stablecoins/stablecoincharts/all',
     abi: 'uint256',
     multiplier: '1000000000000000000',

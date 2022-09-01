@@ -6,7 +6,7 @@
 
 const { ApiAdapter } = require('../api_adapter')
 const { DefiLamaAdapter } = require('../defilama')
-const { services, randomized_services } = require('../services')
+const { services, randomizedServices } = require('../services')
 
 require('dotenv').config()
 
@@ -15,14 +15,14 @@ require('dotenv').config()
 
 const app = new ApiAdapter(services)
 app.register_handler(new DefiLamaAdapter())
-const randomized_app = new ApiAdapter(randomized_services)
-randomized_app.register_handler(new DefiLamaAdapter())
+const randomizedApp = new ApiAdapter(randomizedServices)
+randomizedApp.register_handler(new DefiLamaAdapter())
 
 module.exports = {
-  app, randomized_app
+  app, randomizedApp
 }
 
 if (require.main === module) {
   app.listen(process.env.EA_PORT || 8081)
-  randomized_app.listen(process.env.EA_FUZZ_PORT || 8082)
+  randomizedApp.listen(process.env.EA_FUZZ_PORT || 8082)
 }

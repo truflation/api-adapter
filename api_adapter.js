@@ -29,7 +29,7 @@ function getValue (object, key, strict) {
       if (k.includes('=')) {
         const s = k.split('=', 2)
         for (const i of object) {
-          if (i[s[0]] == s[1]) {
+          if (i[s[0]] === s[1]) {
             object = i
             break
           }
@@ -38,9 +38,9 @@ function getValue (object, key, strict) {
         object = object[k]
       } else {
         if (strict === true) {
-	  throw new Error('Invalid path')
+          throw new Error('Invalid path')
         } else {
-	  return undefined
+          return undefined
         }
       }
     }
