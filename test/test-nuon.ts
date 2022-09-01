@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-import { ApiAdapter } from '../api_adapter'
 import { app } from '../servers/index-nuon'
 import axios from 'axios'
 import assert from 'assert'
+import dotenv from 'dotenv'
+dotenv.config()
 
-require('dotenv').config()
 const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
 
-function test_packet (packet, response) {
+function testPacket (packet, response) {
   return async () => {
-    const { data, status } = await axios.post(
+    const { data } = await axios.post(
       url,
       packet,
       {
@@ -24,13 +24,13 @@ function test_packet (packet, response) {
 }
 
 describe('Test', () => {
-  before(async () => {
+  before(() => {
     app.listen(process.env.EA_PORT || 8081)
   })
-  after(async () => {
+  after(() => {
     app.close()
   })
-  it('bad service', test_packet({
+  it('bad service', testPacket({
     service: 'bad service',
     data: { foo: [30, 10530, 'string'] },
     abi: 'ipfs'
