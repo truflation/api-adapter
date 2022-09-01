@@ -28,7 +28,7 @@ const truflation_api_host =
       'https://api.truflation.io'
 const truflation_nft_host =
       process.env.TRUFLATION_NFT_HOST ||
-      'https://truflation-dev-8080.hydrogenx.live'
+      'http://nft.truflation.io:8080'
 
 let services = {
   urlPost: {

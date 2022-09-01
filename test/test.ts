@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-process.env.TRUFLATION_API_HOST='https://truflation-api.hydrogenx.tk'
+process.env.TRUFLATION_API_HOST='http://api.truflation.io'
 import { app } from '../servers/index-main'
 import axios from 'axios'
 import assert from 'assert'
@@ -44,8 +44,19 @@ describe('Test', () => {
     "service": "truflation/at-date",
     "data": {"date" : "2021-10-10"},
     "abi": "json"
-  }, undefined
-                             )).timeout(20000)
+  }, undefined)).timeout(20000)
+
+  it('nft', test_packet({
+    "service": "nft-index",
+    "data": {"index": "nft/top11", "date": "2021-10-10"},
+    "abi": "json"
+  }, {
+    timestamp: '2021-10-10T00:00:00.000Z',
+    index: 104.6402453102453,
+    aDayChange: 0.24229362591431586,
+    aMonthChange: 25.03669682169257
+  })).timeout(20000)
+
   it('echo 1', test_packet({
     "service": "echo",
     "data": {"foo": 1024},
