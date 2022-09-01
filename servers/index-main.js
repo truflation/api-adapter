@@ -10,8 +10,6 @@ const { services, randomized_services } = require('../services')
 
 require('dotenv').config()
 
-
-
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
