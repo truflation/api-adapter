@@ -158,7 +158,7 @@ jobs:
 
   deployProduction:
     name: Deploy/Production
-    # needs: buildProduction
+    needs: buildProduction
     runs-on: ubuntu-latest
     steps:
       - name: deploy to server
