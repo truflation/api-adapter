@@ -155,3 +155,17 @@ jobs:
           labels: ${{ steps.meta-nuon.outputs.labels }}
           build-args: |
             CONFIG=nuon
+
+  deployProduction:
+    name: Deploy/Production
+    # needs: buildProduction
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.API_ADAPTER_HOST }}
+          username: ${{ secrets.API_ADAPTER_HOST_USERNAME }}
+          key: ${{ secrets.API_ADAPTER_KEY }}
+          port: ${{ secrets.API_ADAPTER_PORT }}
+          script: ./api-adapter/run.sh;
