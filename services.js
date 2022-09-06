@@ -7,6 +7,17 @@
 const { echoFunc, stub1Func, fuzzFunc } =
       require('./api_adapter')
 
+
+const truflationApiHost =
+      process.env.TRUFLATION_API_HOST ||
+      'https://api.truflation.io'
+const truflationApiHostUk =
+      process.env.TRUFLATION_API_HOST_UK ||
+      'http://api.truflation.io:1066'
+const truflationNftHost =
+      process.env.TRUFLATION_NFT_HOST ||
+      'http://nft.truflation.io:8080'
+
 function addLocation (url, data) {
   if (data?.location === undefined) {
     return [url, data]
@@ -15,20 +26,13 @@ function addLocation (url, data) {
     delete data.location
     return [url, data]
   }
-  if (data.location.match(/^[a-z]+$/)) {
-    url += '/'
-    url += data.location
+  if (data.location === 'uk') {
+    url = url.replace(truflationApiHost,
+                      truflationApiHostUk)
     delete data.location
   }
   return [url, data]
 }
-
-const truflationApiHost =
-      process.env.TRUFLATION_API_HOST ||
-      'https://api.truflation.io'
-const truflationNftHost =
-      process.env.TRUFLATION_NFT_HOST ||
-      'http://nft.truflation.io:8080'
 
 const services = {
   urlPost: {
@@ -51,7 +55,9 @@ const services = {
     minertoken: true
   },
   urlTransform: {
-    'truflation/at-date': addLocation
+    'truflation/current': addLocation,
+    'truflation/at-date': addLocation,
+    'truflation/range': addLocation
   },
   func: {
     echo: echoFunc,
