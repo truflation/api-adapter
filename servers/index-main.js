@@ -5,7 +5,7 @@
 // packages and outputs json.
 
 const { ApiAdapter } = require('../api_adapter')
-const { DefiLamaAdapter } = require('../defilama')
+const { DefiLlamaAdapter } = require('../defillama')
 const { services, randomizedServices } = require('../services')
 
 require('dotenv').config()
@@ -14,9 +14,9 @@ require('dotenv').config()
 // subject to change
 
 const app = new ApiAdapter(services)
-app.register_handler(new DefiLamaAdapter())
+app.register_handler(new DefiLlamaAdapter())
 const randomizedApp = new ApiAdapter(randomizedServices)
-randomizedApp.register_handler(new DefiLamaAdapter())
+randomizedApp.register_handler(new DefiLlamaAdapter())
 
 module.exports = {
   app, randomizedApp

@@ -11,14 +11,14 @@ const endpoints = {
   yields: 'https://yields.llama.fi'
 }
 
-class DefiLamaAdapter {
+class DefiLlamaAdapter {
   handle (service, data) {
     let method = 'get'
     if (typeof service !== 'string') {
       return undefined
     }
     const s = service.split('/')
-    if (s?.[0] !== 'defilama') {
+    if (s?.[0] !== 'defillama') {
       return undefined
     }
     let url = endpoints[s?.[1]]
@@ -39,5 +39,5 @@ class DefiLamaAdapter {
 }
 
 module.exports = {
-  DefiLamaAdapter
+  DefiLlamaAdapter
 }
