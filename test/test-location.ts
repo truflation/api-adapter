@@ -30,12 +30,12 @@ describe('Test', () => {
   it('connect', testPacket({
     service: 'truflation/current',
     abi: 'json',
-    data: {'location': 'uk'}
+    data: { location: 'uk' }
   }, undefined)).timeout(20000)
   it('connect', testPacket({
     service: 'truflation/current',
     abi: 'json',
-    data: {'location': 'us'}
+    data: { location: 'us' }
   }, undefined)).timeout(20000)
 
   after(() => {

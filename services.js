@@ -7,7 +7,6 @@
 const { echoFunc, stub1Func, fuzzFunc } =
       require('./api_adapter')
 
-
 const truflationApiHost =
       process.env.TRUFLATION_API_HOST ||
       'https://api.truflation.io'
@@ -28,7 +27,7 @@ function addLocation (url, data) {
   }
   if (data.location === 'uk') {
     url = url.replace(truflationApiHost,
-                      truflationApiHostUk)
+      truflationApiHostUk)
     delete data.location
   }
   return [url, data]
