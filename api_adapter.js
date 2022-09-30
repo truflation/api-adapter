@@ -10,7 +10,7 @@ const { Requester } = require('@chainlink/external-adapter')
 const Web3EthAbi = require('web3-eth-abi')
 const cbor = require('cbor')
 const { create } = require('ipfs-http-client')
-const client = create('https://ipfs.infura.io:5001/api/v0')
+const client = create(process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0')
 
 function isNumeric (val) {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
@@ -86,7 +86,7 @@ async function extractData (data, header, fuzz = false) {
     }
   }
 
-  console.log(multiplier)
+  console.log(`multiplier = multiplier`)
   if (multiplier !== undefined &&
       multiplier !== '') {
     if (Array.isArray(data)) {
@@ -100,10 +100,12 @@ async function extractData (data, header, fuzz = false) {
     abi = 'json'
   }
   if (abi === 'ipfs' || abi === 'ipfs/json') {
+    console.log('ipfs')
     const r = await client.add(JSON.stringify(data))
     data = r.path
     json = false
   } else if (abi === 'ipfs/cbor') {
+    console.log('ipfs')
     const r = await client.add(cbor.encode(data))
     data = r.path
     json = false
