@@ -10,7 +10,7 @@ const { services, randomizedServices } = require('../services')
 
 require('dotenv').config()
 
-// note that the api endpoints are for testing purposes onlu and are
+// note that the api endpoints are for testing purposes only and are
 // subject to change
 
 const app = new ApiAdapter(services)
