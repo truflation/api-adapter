@@ -4,7 +4,7 @@
   "main": "index.ts",
   "license": "MIT",
   "scripts": {
-    "test": "mocha test/**/*.ts ----exit --require ts-node/register",
+    "test": "ts-mocha test/**/*.ts ----exit",
     "start": "node index.js",
     "build": "docker build -t truflation/api-adapter . --no-cache",
     "lint": "npx eslint *.js test/**/*.ts"
@@ -19,6 +19,7 @@
     "dotenv": "^16.0.1",
     "ipfs-http-client": "^56.0.3",
     "mocha": "^10.0.0",
+    "node-calls-python": "^1.7.2",
     "web3-eth-abi": "^1.7.3",
     "whatwg-url": "^11.0.0"
   },
@@ -36,6 +37,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-standard": "^4.0.1",
     "express": "^4.17.0",
+    "ts-mocha": "^10.0.0",
     "ts-node": "^10.9.1",
     "typescript": "*"
   }
