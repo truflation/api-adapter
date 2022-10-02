@@ -8,7 +8,7 @@ dotenv.config()
 
 const app = new ApiAdapter({})
 app.register_handler(new DefiLlamaAdapter())
-const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
+const url = process.env.URL_ADAPTER ?? 'http://localhost:8081/'
 
 function testPacket (packet, response) {
   return async () => {
@@ -28,7 +28,7 @@ function testPacket (packet, response) {
 
 describe('Test', () => {
   before(() => {
-    app.listen(process.env.EA_PORT || 8081)
+    app.listen(process.env.EA_PORT ?? 8081)
   })
   after(() => {
     app.close()

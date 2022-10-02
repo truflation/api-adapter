@@ -89,7 +89,7 @@ async function extractData (data, header, fuzz = false) {
     }
   }
 
-  console.log(`multiplier = multiplier`)
+  console.log('multiplier = multiplier')
   if (multiplier !== undefined &&
       multiplier !== '') {
     if (Array.isArray(data)) {

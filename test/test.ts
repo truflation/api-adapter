@@ -4,7 +4,7 @@ import axios from 'axios'
 import assert from 'assert'
 import dotenv from 'dotenv'
 dotenv.config()
-const url = process.env.URL_ADAPTER || 'http://localhost:8081/'
+const url = process.env.URL_ADAPTER ?? 'http://localhost:8081/'
 
 function testPacket (packet, response) {
   return async () => {
@@ -24,7 +24,7 @@ function testPacket (packet, response) {
 
 describe('Test', () => {
   before(() => {
-    app.listen(process.env.EA_PORT || 8081)
+    app.listen(process.env.EA_PORT ?? 8081)
   })
   after(() => {
     app.close()
