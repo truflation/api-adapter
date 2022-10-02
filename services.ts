@@ -4,20 +4,19 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-const { echoFunc, stub1Func, fuzzFunc, echoPythonFunc } =
-      require('./api_adapter')
+import { echoFunc, stub1Func, fuzzFunc, echoPythonFunc } from './api_adapter'
 
 const truflationApiHost =
-      process.env.TRUFLATION_API_HOST ||
+      process.env.TRUFLATION_API_HOST ??
       'https://api.truflation.io'
 const truflationApiHostUk =
-      process.env.TRUFLATION_API_HOST_UK ||
+      process.env.TRUFLATION_API_HOST_UK ??
       'http://api.truflation.io:1066'
 const truflationNftHost =
-      process.env.TRUFLATION_NFT_HOST ||
+      process.env.TRUFLATION_NFT_HOST ??
       'http://nft.truflation.io:8080'
 
-function addLocation (url, data) {
+function addLocation (url: string, data: any): [string, any] {
   if (data?.location === undefined) {
     return [url, data]
   }

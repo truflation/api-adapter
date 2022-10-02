@@ -4,15 +4,17 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-const express = require('express')
-const bodyParser = require('body-parser')
-const { Requester } = require('@chainlink/external-adapter')
-const Web3EthAbi = require('web3-eth-abi')
-const cbor = require('cbor')
-const { create } = require('ipfs-http-client')
-const client = create(process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0')
+import express from 'express'
+import bodyParser from 'body-parser'
+import cbor from 'cbor'
+import nodecallspython from 'node-calls-python'
+import { Requester } from '@chainlink/external-adapter'
+import { create } from 'ipfs-http-client'
 
-const nodecallspython = require('node-calls-python')
+const Web3EthAbi = require('web3-eth-abi')
+const client = create({
+  url: process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0'
+})
 const py = nodecallspython.interpreter
 
 function isNumeric (val) {
@@ -61,7 +63,8 @@ async function extractData (data, header, fuzz = false) {
   if (keypath !== undefined &&
       keypath !== '') {
     data = getValue(
-      data, keypath
+      data, keypath, false
+
     )
   }
   console.log('starting fuzz', fuzz)
@@ -123,7 +126,7 @@ async function extractData (data, header, fuzz = false) {
 }
 
 function serialize (obj) {
-  const str = []
+  const str: string[] = []
   for (const p in obj) {
     if (p in obj) {
       str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
@@ -133,6 +136,9 @@ function serialize (obj) {
 }
 
 class ApiAdapter {
+  services: any
+  app: any
+  listener: any
   constructor (services) {
     if (services?.fuzz === undefined) {
       services.fuzz = {}
@@ -204,7 +210,7 @@ class ApiAdapter {
     if ((typeof data === 'string' ||
          data instanceof String) &&
         data.replace(/\s/g, '').length) {
-      data = JSON.parse(data)
+      data = JSON.parse(data.toString())
     }
     if (data === undefined) {
       data = {}
@@ -281,10 +287,10 @@ class ApiAdapter {
   }
 }
 
-async function echoFunc (body, res) {
+export async function echoFunc (body, res) {
   let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
-    data = JSON.parse(data)
+    data = JSON.parse(data.toString())
   }
   const [retval, json] = await extractData(
     data, body
@@ -297,14 +303,13 @@ async function echoFunc (body, res) {
   }
 }
 
-async function echoPythonFunc (body, res) {
+export async function echoPythonFunc (body, res) {
   let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
-    data = JSON.parse(data)
-
+    data = JSON.parse(data.toString())
   }
   const echo = py.importSync(__dirname + '/echo.py')
-  data = py.callSync(echo, "echo", data)
+  data = py.callSync(echo, 'echo', data)
   console.log(`data = ${data}`)
   const [retval, json] = await extractData(
     data, body
@@ -317,10 +322,10 @@ async function echoPythonFunc (body, res) {
   }
 }
 
-async function fuzzFunc (body, res) {
+export async function fuzzFunc (body, res) {
   let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
-    data = JSON.parse(data)
+    data = JSON.parse(data.toString())
   }
   const [retval, json] = await extractData(
     data, body, true
@@ -333,10 +338,10 @@ async function fuzzFunc (body, res) {
   }
 }
 
-async function stub1Func (body, res) {
+export async function stub1Func (body, res) {
   let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
-    data = JSON.parse(data)
+    data = JSON.parse(data.toString())
   }
   const range = data.range !== undefined ? data.range : [0.0, 1.0]
   const indexes = data.indexes !== undefined ? data.indexes : ['index']
@@ -356,13 +361,14 @@ async function stub1Func (body, res) {
 }
 
 class PermissionedApiAdapter extends ApiAdapter {
+  whiteList: string[]
   constructor (services, whiteList) {
     super(services)
     this.whiteList = whiteList
   }
 
   getPermission (body) {
-    return this.whiteList.includes(this.body?.meta?.sender)
+    return this.whiteList.includes(body?.meta?.sender)
   }
 }
 

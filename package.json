@@ -5,13 +5,14 @@
   "license": "MIT",
   "scripts": {
     "test": "ts-mocha test/**/*.ts ----exit",
-    "start": "node index.js",
+    "start": "ts-node index.js",
     "build": "docker build -t truflation/api-adapter . --no-cache",
-    "lint": "npx eslint *.js test/**/*.ts"
+    "lint": "npx eslint *.ts *.js test/**/*.ts"
   },
   "dependencies": {
     "@chainlink/external-adapter": "^0.2.3",
     "@types/mocha": "^9.1.1",
+    "@types/web3-eth-abi": "^1.2.2",
     "@types/yargs": "^17.0.10",
     "assert": "^2.0.0",
     "axios": "^0.27.2",

@@ -19,4 +19,4 @@ RUN ln -sf servers/index-${CONFIG}.js index.js
 EXPOSE 8081
 EXPOSE 8082
 
-CMD [ "node", "index.js" ]
+CMD [ "npx", "ts-node", "index.js" ]
