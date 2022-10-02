@@ -16,7 +16,11 @@ const truflationNftHost =
       process.env.TRUFLATION_NFT_HOST ??
       'http://nft.truflation.io:8080'
 
-function addLocation (url: string, data: any): [string, any] {
+interface Location {
+  location: string | undefined
+}
+
+function addLocation (url: string, data: Location): [string, Location] {
   if (data?.location === undefined) {
     return [url, data]
   }
