@@ -4,7 +4,7 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-const { echoFunc, stub1Func, fuzzFunc } =
+const { echoFunc, stub1Func, fuzzFunc, echoPythonFunc } =
       require('./api_adapter')
 
 const truflationApiHost =
@@ -60,6 +60,7 @@ const services = {
   },
   func: {
     echo: echoFunc,
+    'echo/python': echoPythonFunc,
     stub1: stub1Func,
     fuzz: fuzzFunc
   }

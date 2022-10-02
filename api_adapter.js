@@ -12,6 +12,9 @@ const cbor = require('cbor')
 const { create } = require('ipfs-http-client')
 const client = create(process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0')
 
+const nodecallspython = require('node-calls-python')
+const py = nodecallspython.interpreter
+
 function isNumeric (val) {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
   // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
@@ -295,6 +298,26 @@ async function echoFunc (body, res) {
   }
 }
 
+async function echoPythonFunc (body, res) {
+  let data = body.data === undefined ? {} : body.data
+  if (typeof data === 'string' || data instanceof String) {
+    data = JSON.parse(data)
+
+  }
+  const echo = py.importSync(__dirname + '/echo.py')
+  data = py.callSync(echo, "echo", data)
+  console.log(`data = ${data}`)
+  const [retval, json] = await extractData(
+    data, body
+  )
+  if (json) {
+    res.json(retval)
+  } else {
+    res.write(retval)
+    res.end(undefined, 'binary')
+  }
+}
+
 async function fuzzFunc (body, res) {
   let data = body.data === undefined ? {} : body.data
   if (typeof data === 'string' || data instanceof String) {
@@ -350,6 +373,7 @@ module.exports = {
   extractData,
   echoFunc,
   stub1Func,
+  echoPythonFunc,
   fuzzFunc,
   serialize
 }
