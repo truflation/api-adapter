@@ -94,13 +94,15 @@ async function extractData (data, header, fuzz = false) {
   }
 
   if (multiplier !== undefined &&
-      multiplier !== '') {
+    multiplier !== '') {
+    console.log(`multiplier=${multiplier}`)
     if (Array.isArray(data)) {
       data = data.map((x) =>
         BigNumber(x).times(multiplier).integerValue().toString())
     } else {
       data = BigNumber(data).times(multiplier).integerValue().toString()
     }
+    console.log(data)
   }
 
   if (abi === undefined || abi === '') {
