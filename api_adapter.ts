@@ -8,7 +8,6 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cbor from 'cbor'
 import nodecallspython from 'node-calls-python'
-
 import { Requester } from '@chainlink/external-adapter'
 import { create } from 'ipfs-http-client'
 
@@ -17,22 +16,6 @@ const client = create({
   url: process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0'
 })
 const py = nodecallspython.interpreter
-
-function toBytes (hex: string): string {
-  if (typeof hex !== 'string') {
-    throw new TypeError(
-      `The \`hex\` argument must be of type 'string', but it is of type '${typeof hex}'`
-    )
-  }
-  if (hex.slice(0, 2) === '0x') {
-    hex = hex.slice(2)
-  }
-  const result: string[] = []
-  for (let i = 0; i < hex.length; i += 2) {
-    result.push(String.fromCharCode(parseInt(hex.substr(i, 2), 16)))
-  }
-  return result.join('')
-}
 
 function isNumeric (val) {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
@@ -105,6 +88,7 @@ async function extractData (data, header, fuzz = false) {
     }
     if (typeof data === 'object') {
       data = iterate(data)
+      console.log('data', data)
     }
   }
 
@@ -134,7 +118,7 @@ async function extractData (data, header, fuzz = false) {
     data = cbor.encode(data)
     json = false
   } else if (abi !== 'json') {
-    data = toBytes(Web3EthAbi.encodeParameter(abi, data))
+    data = Web3EthAbi.encodeParameter(abi, data)
     json = false
   }
   console.log(data, json)
