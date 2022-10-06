@@ -62,11 +62,12 @@ async function extractData (data, header, fuzz = false) {
 
   let json = true
   if (keypath !== undefined &&
-      keypath !== '') {
+    keypath !== '') {
+    console.log(`keypath=${keypath}`)
     data = getValue(
       data, keypath, false
-
     )
+    console.log(`keypath/data=${data}`)
   }
   console.log('starting fuzz', fuzz)
   if (fuzz) {
@@ -192,7 +193,7 @@ class ApiAdapter {
       this.services.func[service](body, res)
       return
     }
-
+    console.log(`body = ${body}`)
     this.createRequest(body, (status, result) => {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
@@ -220,7 +221,7 @@ class ApiAdapter {
     if (data === undefined) {
       data = {}
     }
-
+    console.log(service)
     let url = this.services?.urlPost?.[service]
     let method = 'post'
     if (url === undefined) {
