@@ -96,11 +96,12 @@ async function extractData (data, header, fuzz = false) {
   if (multiplier !== undefined &&
     multiplier !== '') {
     console.log(`multiplier=${multiplier}`)
+    console.log(`data=${data}`)
     if (Array.isArray(data)) {
       data = data.map((x) =>
-        BigNumber(x).times(multiplier).integerValue().toString())
+        BigNumber(multiplier).times(x).integerValue().toString())
     } else {
-      data = BigNumber(data).times(multiplier).integerValue().toString()
+      data = BigNumber(multiplier).times(data).integerValue().toString()
     }
     console.log(data)
   }
