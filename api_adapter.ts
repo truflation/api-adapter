@@ -8,6 +8,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import cbor from 'cbor'
 import nodecallspython from 'node-calls-python'
+import BigNumber from 'bignumber.js'
 import { Requester } from '@chainlink/external-adapter'
 import { create } from 'ipfs-http-client'
 
@@ -95,9 +96,10 @@ async function extractData (data, header, fuzz = false) {
   if (multiplier !== undefined &&
       multiplier !== '') {
     if (Array.isArray(data)) {
-      data = data.map((x) => BigInt(x * multiplier))
+      data = data.map((x) =>
+        BigNumber(x).times(multiplier).integerValue().toString())
     } else {
-      data = BigInt(data * multiplier)
+      data = BigNumber(data).times(multiplier).integerValue().toString()
     }
   }
 
