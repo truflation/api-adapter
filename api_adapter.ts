@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js'
 import { Requester } from '@chainlink/external-adapter'
 import { create } from 'ipfs-http-client'
 
+BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
 const Web3EthAbi = require('web3-eth-abi')
 const client = create({
   url: process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0'
