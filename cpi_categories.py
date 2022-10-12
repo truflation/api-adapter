@@ -67,7 +67,7 @@ def calc_category_indexes(data: Dict, categories: Dict) -> Dict:
 
 def postprocess_categories(request: Dict, data: Dict):
     """postprocess category indexes"""
-    location: str = request.get('location', 'uk')
+    location: str = request.get('location', 'us')
     fname =  os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         f'categories-{location}.json'
