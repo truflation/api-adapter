@@ -56,14 +56,31 @@ function getValue (object, key, strict) {
 }
 
 interface Request {
-  keypath: string | undefined
-  multiplier: string | undefined
-  abi: string | undefined
+  keypath?: string
+  multiplier?: string
+  abi?: string
   service: string
-  data: object | string | undefined
+  data?: object | string
 }
 
-async function extractData (data, header: Request, fuzz = false): [any, any] {
+function iterate (obj): object {
+  const r = {}
+  Object.keys(obj).forEach((key: string) => {
+    r[key] = obj[key]
+    if (isNumeric(obj[key])) {
+      const n = +obj[key]
+      r[key] = n * (1.0 + (0.1 * (0.5 - Math.random())))
+    } else {
+          r[key] = obj[key]
+    }
+    if (typeof obj[key] === 'object' && obj[key] !== null) {
+      r[key] = iterate(obj[key])
+    }
+  })
+  return r
+}
+
+async function extractData (data, header: Request, fuzz = false) {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
@@ -81,22 +98,6 @@ async function extractData (data, header: Request, fuzz = false): [any, any] {
   console.log('starting fuzz', fuzz)
   if (fuzz) {
     console.log('fuzzing')
-    function iterate (obj): object {
-      const r = {}
-      Object.keys(obj).forEach((key: string) => {
-        r[key] = obj[key]
-        if (isNumeric(obj[key])) {
-          const n = +obj[key]
-          r[key] = n * (1.0 + (0.1 * (0.5 - Math.random())))
-        } else {
-          r[key] = obj[key]
-        }
-        if (typeof obj[key] === 'object' && obj[key] !== null) {
-          r[key] = iterate(obj[key])
-        }
-      })
-      return r
-    }
     if (typeof data === 'object') {
       data = iterate(data)
       console.log('data', data)
@@ -151,12 +152,14 @@ function serialize (obj) {
 }
 
 interface Services {
-  urlPost: object | undefined
-  urlGet: object | undefined
-  urlEncodeData: object | undefined
-  urlTransform: object | undefined
-  urlPostProcess: object | undefined
-  func: object | undefined
+  urlPost?: object
+  urlGet?: object
+  urlEncodeData?: object
+  urlTransform?: object
+  urlPostProcess?: object
+  func?: object
+  fuzz?: boolean
+  handlers: any
 }
 
 class ApiAdapter {
@@ -164,13 +167,13 @@ class ApiAdapter {
   app: any
   listener: any
   constructor (services: Services) {
-    services.fuzz = services?.fuzz ?? {}
+    services.fuzz = services?.fuzz ?? false
     services.func = services?.func ?? {}
     services.urlPost = services?.urlPost ?? {}
-    services?.urlGet = services?.urlGet ?? {}
-    services?.urlTransform = services?.urlTransform ?? {}
-    services?.urlPostProcess = services?.urlPostProcess ?? {}
-    services?.urlEncodeData = services?.urlEncodeData ?? {}
+    services.urlGet = services?.urlGet ?? {}
+    services.urlTransform = services?.urlTransform ?? {}
+    services.urlPostProcess = services?.urlPostProcess ?? {}
+    services.urlEncodeData = services?.urlEncodeData ?? {}
 
     this.services = services
     this.services.handlers = []
@@ -211,8 +214,8 @@ class ApiAdapter {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
       console.log(`service=${service}`)
-      if (this?.services?.urlPostProcess[service] !== undefined) {
-        result[0] = this.services.urlPostProcess[service](body, result[0])
+      if (this.services.urlPostProcess?.[service] !== undefined) {
+        result[0] = this.services.urlPostProcess?.[service](body, result[0])
       }
       try {
         if (result[1]) {
@@ -287,7 +290,7 @@ class ApiAdapter {
       .then(async response => {
         const [retval, json] = await extractData(
           response.data, input,
-          this.services?.fuzz[service] === true
+          this.services.fuzz?.[service] === true
         )
         callback(response.status, [retval, json])
       })
@@ -306,7 +309,7 @@ class ApiAdapter {
   }
 }
 
-export async function echoFunc (body: Request, res): void {
+export async function echoFunc (body: Request, res): Promise<void> {
   let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
@@ -322,8 +325,8 @@ export async function echoFunc (body: Request, res): void {
   }
 }
 
-export async function echoPythonFunc (body: Request, res): void {
-  let data = body.data ?? {}
+export async function echoPythonFunc (body: Request, res): Promise<void> {
+  let data: any = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
   }
@@ -341,7 +344,7 @@ export async function echoPythonFunc (body: Request, res): void {
   }
 }
 
-export async function fuzzFunc (body: Request, res): void {
+export async function fuzzFunc (body: Request, res): Promise<void> {
   let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
@@ -357,7 +360,7 @@ export async function fuzzFunc (body: Request, res): void {
   }
 }
 
-export async function stub1Func (body, res): void {
+export async function stub1Func (body, res): Promise<void> {
   let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
