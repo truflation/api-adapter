@@ -211,11 +211,14 @@ class ApiAdapter {
       this.services.func[service](body, res)
       return
     }
-    console.log(`body = ${body}`)
+    const me = this
     this.createRequest(body, (status, result) => {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
       try {
+	if (this?.services?.urlPostProcess[service] !== undefined) {
+	  result[0] = this.services.func[service](body, result[0])
+	}
         if (result[1]) {
           res.status(status).json(result[0])
         } else {

@@ -17,10 +17,16 @@ const truflationNftHost =
       'http://nft.truflation.io:8080'
 
 interface Location {
-  location: string | undefined
+  location: string | undefined,
+  categories: string | undefined,
+  derivation: string | undefined
 }
 
 function addLocation (url: string, data: Location): [string, Location] {
+  if (data?.categories === "true") {
+    delete data.categories
+    data.derivation = "true"
+  }
   if (data?.location === undefined) {
     return [url, data]
   }
@@ -34,6 +40,14 @@ function addLocation (url: string, data: Location): [string, Location] {
     delete data.location
   }
   return [url, data]
+}
+
+function truflationPostProcess(body, result) {
+  let data = body.data === undefined ? {} : body.data
+  if (data?.categories != "true") {
+    return result
+  }
+  return result
 }
 
 const services = {
@@ -60,6 +74,11 @@ const services = {
     'truflation/current': addLocation,
     'truflation/at-date': addLocation,
     'truflation/range': addLocation
+  },
+  urlPostProcess: {
+    'truflation/current': truflationPostProcess,
+    'truflation/at-date': truflationPostProcess,
+    'truflation/range': truflationPostProcess
   },
   func: {
     echo: echoFunc,
