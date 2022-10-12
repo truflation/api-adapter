@@ -242,6 +242,7 @@ class ApiAdapter {
       data = {}
     }
     console.log(service)
+    console.log(`data=${data}`)
     let url = this.services?.urlPost?.[service]
     let method = 'post'
     if (url === undefined) {
@@ -256,6 +257,8 @@ class ApiAdapter {
     }
 
     if (this.services?.urlEncodeData?.[service] === true) {
+      console.log('urlEncode')
+      console.log(data)
       url = url + '?' + serialize(data)
       data = undefined
     }
