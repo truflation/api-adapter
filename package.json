@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "test": "ts-mocha test/**/*.ts ----exit",
+    "pytest": "python -m pytest -s",
     "start": "ts-node index.js",
     "build": "docker build -t truflation/api-adapter . --no-cache",
     "lint": "npx eslint *.ts *.js test/**/*.ts"
