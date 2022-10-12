@@ -19,7 +19,7 @@ const client = create({
 })
 const py = nodecallspython.interpreter
 
-function isNumeric (val) {
+function isNumeric (val): boolean {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
   // ...but misinterprets leading-number strings, particularly hex literals ("0x...")
   // subtraction forces infinities to NaN
@@ -55,7 +55,15 @@ function getValue (object, key, strict) {
   }
 }
 
-async function extractData (data, header, fuzz = false) {
+interface Request {
+  keypath: string | undefined
+  multiplier: string | undefined
+  abi: string | undefined
+  service: string
+  data: object | string | undefined
+}
+
+async function extractData (data, header: Request, fuzz = false): [any, any] {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
@@ -73,9 +81,9 @@ async function extractData (data, header, fuzz = false) {
   console.log('starting fuzz', fuzz)
   if (fuzz) {
     console.log('fuzzing')
-    const iterate = (obj) => {
+    function iterate (obj): object {
       const r = {}
-      Object.keys(obj).forEach(key => {
+      Object.keys(obj).forEach((key: string) => {
         r[key] = obj[key]
         if (isNumeric(obj[key])) {
           const n = +obj[key]
@@ -142,8 +150,17 @@ function serialize (obj) {
   return str.join('&')
 }
 
+interface Services {
+  urlPost: object | undefined
+  urlGet: object | undefined
+  urlEncodeData: object | undefined
+  urlTransform: object | undefined
+  urlPostProcess: object | undefined
+  func: object | undefined
+}
+
 class ApiAdapter {
-  services: any
+  services: Services
   app: any
   listener: any
   constructor (services) {
@@ -294,8 +311,8 @@ class ApiAdapter {
   }
 }
 
-export async function echoFunc (body, res) {
-  let data = body.data === undefined ? {} : body.data
+export async function echoFunc (body: Request, res): void {
+  let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
   }
@@ -310,8 +327,8 @@ export async function echoFunc (body, res) {
   }
 }
 
-export async function echoPythonFunc (body, res) {
-  let data = body.data === undefined ? {} : body.data
+export async function echoPythonFunc (body: Request, res): void {
+  let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
   }
@@ -329,8 +346,8 @@ export async function echoPythonFunc (body, res) {
   }
 }
 
-export async function fuzzFunc (body, res) {
-  let data = body.data === undefined ? {} : body.data
+export async function fuzzFunc (body: Request, res): void {
+  let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
   }
@@ -345,8 +362,8 @@ export async function fuzzFunc (body, res) {
   }
 }
 
-export async function stub1Func (body, res) {
-  let data = body.data === undefined ? {} : body.data
+export async function stub1Func (body, res): void {
+  let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
   }
