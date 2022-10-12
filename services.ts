@@ -4,8 +4,10 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
+import nodecallspython from 'node-calls-python'
 import { echoFunc, stub1Func, fuzzFunc, echoPythonFunc } from './api_adapter'
 
+const py = nodecallspython.interpreter
 const truflationApiHost =
       process.env.TRUFLATION_API_HOST ??
       'https://api.truflation.io'
@@ -24,8 +26,7 @@ interface Location {
 
 function addLocation (url: string, data: Location): [string, Location] {
   if (data?.categories === "true") {
-    delete data.categories
-    data.derivation = "true"
+    data['show-derivation'] = "true"
   }
   if (data?.location === undefined) {
     return [url, data]
@@ -43,11 +44,13 @@ function addLocation (url: string, data: Location): [string, Location] {
 }
 
 function truflationPostProcess(body, result) {
-  let data = body.data === undefined ? {} : body.data
-  if (data?.categories != "true") {
+  let data = body.data ?? {}
+  if (data?.categories !== "true") {
     return result
   }
-  return result
+  const cpiCategories = py.importSync(__dirname + '/cpi_categories.py')
+  return py.callSync(cpiCategories, "postprocess_categories",
+		     body, result)
 }
 
 const services = {

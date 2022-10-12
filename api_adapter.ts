@@ -217,7 +217,7 @@ class ApiAdapter {
       console.log(typeof result[0])
       try {
 	if (this?.services?.urlPostProcess[service] !== undefined) {
-	  result[0] = this.services.func[service](body, result[0])
+	  result[0] = this.services.urlPostProcess[service](body, result[0])
 	}
         if (result[1]) {
           res.status(status).json(result[0])
@@ -257,9 +257,7 @@ class ApiAdapter {
     }
 
     if (this.services?.urlEncodeData?.[service] === true) {
-      console.log('urlencode')
       url = url + '?' + serialize(data)
-      console.log(url)
       data = undefined
     }
 
@@ -291,12 +289,10 @@ class ApiAdapter {
       }
     )
       .then(async response => {
-        console.log(response.data, input)
         const [retval, json] = await extractData(
           response.data, input,
           this.services?.fuzz[service] === true
         )
-        console.log(retval)
         callback(response.status, [retval, json])
       })
       .catch(error => {
