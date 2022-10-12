@@ -23,7 +23,7 @@ describe('Test', () => {
     multiplier: '1000000000000000000',
     keypath: 'peggedAssets.symbol=USDT.circulating.peggedUSD'
   }, {
-    regexp: '^0x[0-9a-fA-F]+$'
+    regexp: '^0x[0-9a-fA-F]{64}$'
   })).timeout(20000)
   it('connect', testPacket({
     service: 'defillama/stablecoins/stablecoincharts/all',

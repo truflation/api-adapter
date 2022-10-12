@@ -163,19 +163,14 @@ class ApiAdapter {
   services: Services
   app: any
   listener: any
-  constructor (services) {
-    if (services?.fuzz === undefined) {
-      services.fuzz = {}
-    }
-    if (services?.func === undefined) {
-      services.func = {}
-    }
-    if (services?.urlPost === undefined) {
-      services.urlPost = {}
-    }
-    if (services?.urlGet === undefined) {
-      services.urlGet = {}
-    }
+  constructor (services: Services) {
+    services.fuzz = services?.fuzz ?? {}
+    services.func = services?.func ?? {}
+    services.urlPost = services?.urlPost ?? {}
+    services?.urlGet = services?.urlGet ?? {}
+    services?.urlTransform = services?.urlTransform ?? {}
+    services?.urlPostProcess = services?.urlPostProcess ?? {}
+    services?.urlEncodeData = services?.urlEncodeData ?? {}
 
     this.services = services
     this.services.handlers = []
@@ -215,10 +210,11 @@ class ApiAdapter {
     this.createRequest(body, (status, result) => {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
+      console.log(`service=${service}`)
+      if (this?.services?.urlPostProcess[service] !== undefined) {
+        result[0] = this.services.urlPostProcess[service](body, result[0])
+      }
       try {
-	if (this?.services?.urlPostProcess[service] !== undefined) {
-	  result[0] = this.services.urlPostProcess[service](body, result[0])
-	}
         if (result[1]) {
           res.status(status).json(result[0])
         } else {

@@ -19,14 +19,14 @@ const truflationNftHost =
       'http://nft.truflation.io:8080'
 
 interface Location {
-  location: string | undefined,
-  categories: string | undefined,
+  location: string | undefined
+  categories: string | undefined
   derivation: string | undefined
 }
 
 function addLocation (url: string, data: Location): [string, Location] {
-  if (data?.categories === "true") {
-    data['show-derivation'] = "true"
+  if (data?.categories === 'true') {
+    data['show-derivation'] = 'true'
   }
   if (data?.location === undefined) {
     return [url, data]
@@ -43,13 +43,13 @@ function addLocation (url: string, data: Location): [string, Location] {
   return [url, data]
 }
 
-function truflationPostProcess(body, result) {
-  let data = body.data ?? {}
-  if (data?.categories !== "true") {
+function truflationPostProcess (body, result) {
+  const data = body.data ?? {}
+  if (data?.categories !== 'true') {
     return result
   }
   const cpiCategories = py.importSync(__dirname + '/cpi_categories.py')
-  return py.callSync(cpiCategories, "postprocess_categories",
+  return py.callSync(cpiCategories, 'postprocess_categories',
 		     body, result)
 }
 

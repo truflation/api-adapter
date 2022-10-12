@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
 """Routines for calculating cpi categories"""
 
+import os
 import copy
+import json
 from typing import Dict, List
 
-
+def safe_div(a, b):
+    if b == 0.0:
+        return 0.0
+    else:
+        return a / b
 def flatten(arr: Dict) -> List:
     """Flatten dict structure"""
     ret = []
@@ -35,12 +41,10 @@ def calc_category_indexes(data: Dict, categories: Dict) -> Dict:
     newdict = copy.deepcopy(data)
     del newdict['derivations']
     newdict['categories'] = {}
-
     for c in categories:
         c = dict(c)
         sources = c['sources']
         del c['sources']
-
         od = data
         der = od['derivations']
         current = der['current']
@@ -51,9 +55,9 @@ def calc_category_indexes(data: Dict, categories: Dict) -> Dict:
         za2 = [float(z['relativeImportance']) for z in cs]
         zb1 = [float(z['adjustedInflationIndex']) for z in ys]
         zb2 = [float(z['relativeImportance']) for z in ys]
-        current: float = sum(za1) / sum(za2)
-        year_ago: float = sum(zb1) / sum(zb2)
-        value: float = current / year_ago * 100 - 100
+        current: float = safe_div(sum(za1), sum(za2))
+        year_ago: float = safe_div(sum(zb1), sum(zb2))
+        value: float = safe_div(current,  year_ago) * 100 - 100
         newdict['categories'][c['name']] = {
             'currentInflationIndex': current,
             'yearAgoInflationIndex': year_ago,
@@ -61,13 +65,27 @@ def calc_category_indexes(data: Dict, categories: Dict) -> Dict:
         }
     return newdict
 
+def postprocess_categories(request: Dict, data: Dict):
+    """postprocess category indexes"""
+    location: str = request.get('location', 'uk')
+    fname =  os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        f'categories-{location}.json'
+    )
+    with open(fname, encoding='utf-8') as catf:
+        catlist = load_categories(json.load(catf))
+        try:
+            r = calc_category_indexes(data, catlist)
+        except Exception as e:
+            print(e)
+        return r
 
 if __name__ == '__main__':
     import json
     import pprint
-    location: str = 'us'
+    location: str = 'uk'
     with open(
-            f'test/categories-{location}.json', encoding='utf-8'
+            f'categories-{location}.json', encoding='utf-8'
     ) as catf:
         catlist = load_categories(json.load(catf))
     with open(
