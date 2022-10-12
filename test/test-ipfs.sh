@@ -11,3 +11,7 @@ curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"servi
 "abi": "ipfs"
 }'
 
+curl -X POST -H 'Content-Type: application/json' -i $URL_ADAPTER --data '{"service": "truflation/at-date",
+"data": {"date" : "2022-01-01", "categories": "true"},
+"abi": "ipfs"
+}'

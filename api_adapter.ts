@@ -214,9 +214,6 @@ class ApiAdapter {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
       console.log(`service=${service}`)
-      if (this.services.urlPostProcess?.[service] !== undefined) {
-        result[0] = this.services.urlPostProcess?.[service](body, result[0])
-      }
       try {
         if (result[1]) {
           res.status(status).json(result[0])
@@ -291,8 +288,12 @@ class ApiAdapter {
       }
     )
       .then(async response => {
+	let result = response.data
+	if (this.services.urlPostProcess?.[service] !== undefined) {
+	  result = this.services.urlPostProcess?.[service](input, result)
+	}
         const [retval, json] = await extractData(
-          response.data, input,
+          result, input,
           this.services.fuzz?.[service] === true
         )
         callback(response.status, [retval, json])
