@@ -23,36 +23,38 @@ export function toBytes (hex: string): string {
 
 interface Response {
   equal: any
-  regexp: any
-  verbose: boolean | undefined
+  regexp: string
+  okFunc: any
+  verbose?: boolean
 }
 
 interface Packet {
-  service: string | undefined
-  abi: string | undefined
-  data: any | undefined
-  multiplier: string | number | undefined
-  keypath: string | undefined
+  service?: string
+  abi?: string
+  data?: any
+  multiplier?: string | number
+  keypath?: string
 }
 
 export function testPacket (packet: Packet, response: Response): void {
   return async () => {
     const { data } = await axios.post(
       url,
-      packet,
-      {
+      packet, {
         headers: {
           'Content-Type': 'application/json'
         }
-      })
+      }
+    )
     if (response?.verbose === true) {
       console.log(data)
     }
     if (response?.equal !== undefined) {
       assert.deepEqual(data, response.equal)
     } else if (response?.regexp !== undefined) {
-      console.log(data)
       assert.ok(data?.match(response.regexp))
+    } else if (response?.okFunc !== undefined) {
+      assert.ok(response.okFunc(data))
     } else if (response !== undefined && response?.verbose === undefined) {
       assert.deepEqual(data, response)
     }

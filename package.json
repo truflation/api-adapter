@@ -8,7 +8,8 @@
     "pytest": "python -m pytest -s",
     "start": "ts-node index.js",
     "build": "docker build -t truflation/api-adapter . --no-cache",
-    "lint": "npx eslint *.ts *.js test/**/*.ts"
+    "lint": "npx eslint *.ts *.js test/**/*.ts",
+    "pylint": "pylint *.py"
   },
   "dependencies": {
     "@chainlink/external-adapter": "^0.2.3",

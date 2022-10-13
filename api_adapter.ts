@@ -11,6 +11,7 @@ import nodecallspython from 'node-calls-python'
 import BigNumber from 'bignumber.js'
 import { Requester } from '@chainlink/external-adapter'
 import { create } from 'ipfs-http-client'
+import path = require('node:path')
 
 BigNumber.config({ EXPONENTIAL_AT: 1e+9 })
 const Web3EthAbi = require('web3-eth-abi')
@@ -18,6 +19,7 @@ const client = create({
   url: process.env.IPFS_HOST ?? 'http://ipfs:5001/api/v0'
 })
 const py = nodecallspython.interpreter
+const echo = py.importSync(path.join(__dirname, 'echo.py'))
 
 function isNumeric (val): boolean {
   // parseFloat NaNs numeric-cast false positives (null|true|false|"")
@@ -55,12 +57,15 @@ function getValue (object, key, strict) {
   }
 }
 
-interface Request {
+export interface TfiRequest {
   keypath?: string
   multiplier?: string
   abi?: string
   service: string
   data?: object | string
+  meta?: {
+    sender?: string
+  }
 }
 
 function iterate (obj): object {
@@ -71,7 +76,7 @@ function iterate (obj): object {
       const n = +obj[key]
       r[key] = n * (1.0 + (0.1 * (0.5 - Math.random())))
     } else {
-          r[key] = obj[key]
+      r[key] = obj[key]
     }
     if (typeof obj[key] === 'object' && obj[key] !== null) {
       r[key] = iterate(obj[key])
@@ -80,11 +85,10 @@ function iterate (obj): object {
   return r
 }
 
-async function extractData (data, header: Request, fuzz = false) {
+async function extractData (data, header: TfiRequest, fuzz = false) {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
-  console.log(header)
 
   let json = true
   if (keypath !== undefined &&
@@ -141,7 +145,7 @@ async function extractData (data, header: Request, fuzz = false) {
   return [data, json]
 }
 
-function serialize (obj) {
+function serialize (obj: object): string {
   const str: string[] = []
   for (const p in obj) {
     if (p in obj) {
@@ -184,16 +188,16 @@ class ApiAdapter {
     })
   }
 
-  getPermission (body) {
+  getPermission (body: TfiRequest): boolean {
     return true
   }
 
-  register_handler (h) {
+  register_handler (h): void {
     this.services.handlers.push(h)
   }
 
-  async process (req, res) {
-    const body = req.body
+  process (req, res): void {
+    const body = req.body as TfiRequest
     if (!this.getPermission(body)) {
       res.status(200).json({ error: 'permission denied' })
       return
@@ -209,7 +213,7 @@ class ApiAdapter {
       this.services.func[service](body, res)
       return
     }
-    const me = this
+
     this.createRequest(body, (status, result) => {
       console.log('Result: ', result[0])
       console.log(typeof result[0])
@@ -227,12 +231,12 @@ class ApiAdapter {
     })
   }
 
-  async createRequest (input, callback) {
+  createRequest (input: TfiRequest, callback): void {
     const service = input.service
-    let data = input.data
+    let data = input.data ?? {}
     if ((typeof data === 'string' ||
          data instanceof String) &&
-        data.replace(/\s/g, '').length) {
+      data.replace(/\s/g, '').length) {
       data = JSON.parse(data.toString())
     }
     if (data === undefined) {
@@ -256,8 +260,8 @@ class ApiAdapter {
     if (this.services?.urlEncodeData?.[service] === true) {
       console.log('urlEncode')
       console.log(data)
-      url = url + '?' + serialize(data)
-      data = undefined
+      url = url + '?' + serialize(data as object)
+      data = {}
     }
 
     for (const i of this.services.handlers) {
@@ -288,10 +292,10 @@ class ApiAdapter {
       }
     )
       .then(async response => {
-	let result = response.data
-	if (this.services.urlPostProcess?.[service] !== undefined) {
-	  result = this.services.urlPostProcess?.[service](input, result)
-	}
+        let result = response.data
+        if (this.services.urlPostProcess?.[service] !== undefined) {
+          result = this.services.urlPostProcess?.[service](input, result)
+        }
         const [retval, json] = await extractData(
           result, input,
           this.services.fuzz?.[service] === true
@@ -308,12 +312,12 @@ class ApiAdapter {
       this.app.listen(port, () => console.log(`Listening on port ${port}!`))
   }
 
-  close () {
+  close (): void {
     this.listener.close()
   }
 }
 
-export async function echoFunc (body: Request, res): Promise<void> {
+export async function echoFunc (body: TfiRequest, res): Promise<void> {
   let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
@@ -329,12 +333,11 @@ export async function echoFunc (body: Request, res): Promise<void> {
   }
 }
 
-export async function echoPythonFunc (body: Request, res): Promise<void> {
+export async function echoPythonFunc (body: TfiRequest, res): Promise<void> {
   let data: any = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
   }
-  const echo = py.importSync(__dirname + '/echo.py')
   data = py.callSync(echo, 'echo', data)
   console.log(`data = ${data}`)
   const [retval, json] = await extractData(
@@ -348,7 +351,7 @@ export async function echoPythonFunc (body: Request, res): Promise<void> {
   }
 }
 
-export async function fuzzFunc (body: Request, res): Promise<void> {
+export async function fuzzFunc (body: TfiRequest, res): Promise<void> {
   let data = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
     data = JSON.parse(data.toString())
@@ -388,13 +391,13 @@ export async function stub1Func (body, res): Promise<void> {
 
 class PermissionedApiAdapter extends ApiAdapter {
   whiteList: string[]
-  constructor (services, whiteList) {
+  constructor (services, whiteList: string[]) {
     super(services)
     this.whiteList = whiteList
   }
 
-  getPermission (body) {
-    return this.whiteList.includes(body?.meta?.sender)
+  getPermission (body: TfiRequest): boolean {
+    return this.whiteList.includes(body?.meta?.sender ?? '')
   }
 }
 

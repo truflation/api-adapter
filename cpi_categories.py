@@ -7,10 +7,11 @@ import json
 from typing import Dict, List
 
 def safe_div(a, b):
+    """no divide by zero"""
     if b == 0.0:
-        return 0.0
-    else:
-        return a / b
+        return float("NaN")
+    return a / b
+
 def flatten(arr: Dict) -> List:
     """Flatten dict structure"""
     ret = []
@@ -65,23 +66,17 @@ def calc_category_indexes(data: Dict, categories: Dict) -> Dict:
         }
     return newdict
 
-def postprocess_categories(request: Dict, data: Dict):
+def postprocess_categories(location: str, data: Dict):
     """postprocess category indexes"""
-    location: str = request.get('location', 'us')
     fname =  os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
         f'categories-{location}.json'
     )
     with open(fname, encoding='utf-8') as catf:
         catlist = load_categories(json.load(catf))
-        try:
-            r = calc_category_indexes(data, catlist)
-        except Exception as e:
-            print(e)
-        return r
+        return calc_category_indexes(data, catlist)
 
 if __name__ == '__main__':
-    import json
     import pprint
     location: str = 'uk'
     with open(

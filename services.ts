@@ -5,9 +5,17 @@
 // packages and outputs json.
 
 import nodecallspython from 'node-calls-python'
-import { echoFunc, stub1Func, fuzzFunc, echoPythonFunc } from './api_adapter'
+import {
+  echoFunc, stub1Func, fuzzFunc, echoPythonFunc,
+  TfiRequest
+} from './api_adapter'
+import path = require('node:path')
 
 const py = nodecallspython.interpreter
+const cpiCategories = py.importSync(
+  path.join(__dirname, 'cpi_categories.py')
+)
+
 const truflationApiHost =
       process.env.TRUFLATION_API_HOST ??
       'https://api.truflation.io'
@@ -24,7 +32,8 @@ interface Location {
   derivation: string | undefined
 }
 
-function addLocation (url: string, data: Location): [string, Location] {
+function addLocation (url: string, datain: Location): [string, Location] {
+  const data = Object.assign({}, datain)
   if (data?.categories === 'true') {
     data['show-derivation'] = 'true'
   }
@@ -43,14 +52,29 @@ function addLocation (url: string, data: Location): [string, Location] {
   return [url, data]
 }
 
-function truflationPostProcess (body, result) {
-  const data = body.data ?? {}
+interface TruflationData {
+  categories?: string
+  location?: string
+}
+
+function truflationPostProcess (body: TfiRequest, result: object): object {
+  let data: TruflationData
+  if ((typeof body.data === 'string' ||
+    body.data instanceof String) &&
+    body.data.replace(/\s/g, '').length !== 0) {
+    data = JSON.parse(body.data.toString()) as TruflationData
+  } else {
+    data = (body.data as object ?? {}) as TruflationData
+  }
+
   if (data?.categories !== 'true') {
     return result
   }
-  const cpiCategories = py.importSync(__dirname + '/cpi_categories.py')
-  return py.callSync(cpiCategories, 'postprocess_categories',
-		     body, result)
+  const location = data?.location ?? 'us'
+  return py.callSync(
+    cpiCategories, 'postprocess_categories',
+    location, result
+  ) as object
 }
 
 const services = {
