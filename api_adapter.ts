@@ -91,7 +91,7 @@ function iterate (obj): object {
   return r
 }
 
-export async function extractData (data, header: TfiRequest, fuzz = false): [any, boolean] {
+export async function extractData (data, header: TfiRequest, fuzz = false): Promise<[any, boolean]> {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
@@ -172,7 +172,7 @@ interface Services {
   handlers: any
 }
 
-class ApiAdapter {
+export class ApiAdapter {
   services: Services
   app: any
   listener: any
