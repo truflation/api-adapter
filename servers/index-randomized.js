@@ -6,6 +6,7 @@
 
 const { ApiAdapter } = require('../api_adapter')
 const { DefiLamaAdapter } = require('../handlers/defilama')
+const { registerUtil } = require('../handlers/util')
 const { randomized_services } = require('../services')
 
 require('dotenv').config()
@@ -15,6 +16,8 @@ require('dotenv').config()
 
 const app = new ApiAdapter(randomized_services)
 app.register_handler(new DefiLamaAdapter())
+app.register_handler(new UtilHttpAdapter())
+registerUtil(app)
 
 if (require.main === module) {
   app.listen(process.env.EA_PORT || 8081)

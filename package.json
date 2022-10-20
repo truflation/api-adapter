@@ -8,7 +8,7 @@
     "pytest": "python -m pytest -s",
     "start": "ts-node index.js",
     "build": "docker build -t truflation/api-adapter . --no-cache",
-    "lint": "npx eslint *.ts *.js test/**/*.ts",
+    "lint": "npx eslint *.ts *.js test/**/*.ts handlers/**/*.ts",
     "pylint": "pylint *.py"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "dotenv": "^16.0.1",
     "ipfs-http-client": "^56.0.3",
     "mocha": "^10.0.0",
+    "nerdamer": "^1.1.13",
     "node-calls-python": "^1.7.2",
     "web3-eth-abi": "^1.7.3",
     "whatwg-url": "^11.0.0"

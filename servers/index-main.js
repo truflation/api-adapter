@@ -6,6 +6,8 @@
 
 const { ApiAdapter } = require('../api_adapter')
 const { DefiLlamaAdapter } = require('../handlers/defillama')
+const { UtilHttpAdapter } = require('../handlers/util_http')
+const { registerUtil } = require('../handlers/util')
 const { services, randomizedServices } = require('../services')
 
 require('dotenv').config()
@@ -15,8 +17,13 @@ require('dotenv').config()
 
 const app = new ApiAdapter(services)
 app.register_handler(new DefiLlamaAdapter())
+app.register_handler(new UtilHttpAdapter())
+registerUtil(app)
+
 const randomizedApp = new ApiAdapter(randomizedServices)
 randomizedApp.register_handler(new DefiLlamaAdapter())
+randomizedApp.register_handler(new UtilHttpAdapter())
+registerUtil(app)
 
 module.exports = {
   app, randomizedApp
