@@ -91,7 +91,7 @@ function iterate (obj): object {
   return r
 }
 
-async function extractData (data, header: TfiRequest, fuzz = false) {
+export async function extractData (data, header: TfiRequest, fuzz = false): [any, boolean] {
   const keypath = header.keypath
   const multiplier = header.multiplier
   let abi = header.abi
@@ -158,7 +158,7 @@ export function serialize (obj: object): string {
       str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
     }
   }
-  return str.join('&')
+  return str.join('&') ?? ''
 }
 
 interface Services {
@@ -200,6 +200,10 @@ class ApiAdapter {
 
   register_handler (h): void {
     this.services.handlers.push(h)
+  }
+
+  register_function (service: string, func): void {
+    this.services.func![service] = func
   }
 
   process (req, res): void {
