@@ -68,6 +68,12 @@ export interface TfiRequest {
   }
 }
 
+export interface HandlerData {
+  url: string
+  data?: object
+  method: string
+}
+
 function iterate (obj): object {
   const r = {}
   Object.keys(obj).forEach((key: string) => {
@@ -145,7 +151,7 @@ async function extractData (data, header: TfiRequest, fuzz = false) {
   return [data, json]
 }
 
-function serialize (obj: object): string {
+export function serialize (obj: object): string {
   const str: string[] = []
   for (const p in obj) {
     if (p in obj) {
@@ -268,9 +274,9 @@ class ApiAdapter {
       const r = i.handle(service, data)
       console.log(r)
       if (r !== undefined) {
-        url = r?.[0]
-        data = r?.[1]
-        method = r?.[2]
+        url = r.url
+        data = r.data
+        method = r.method
         break
       }
     }

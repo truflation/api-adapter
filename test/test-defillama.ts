@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { ApiAdapter } from '../api_adapter'
-import { DefiLlamaAdapter } from '../defillama'
+import { DefiLlamaAdapter } from '../handlers/defillama'
 import { testPacket } from './utils'
 
 const app = new ApiAdapter({})

@@ -2,7 +2,7 @@
 // Copyright 2022 - Laguna Labs
 //
 
-const { serialize } = require('./api_adapter')
+import { serialize, HandlerData } from '../api_adapter'
 
 const endpoints = {
   tvl: 'https://api.llama.fi',
@@ -12,7 +12,7 @@ const endpoints = {
 }
 
 class DefiLlamaAdapter {
-  handle (service, data) {
+  handle (service: string, data?: object): HandlerData | undefined {
     let method = 'get'
     if (typeof service !== 'string') {
       return undefined
@@ -21,7 +21,7 @@ class DefiLlamaAdapter {
     if (s?.[0] !== 'defillama') {
       return undefined
     }
-    let url = endpoints[s?.[1]]
+    let url: string | undefined = endpoints[s?.[1]]
     if (url === undefined) {
       return undefined
     }
@@ -31,10 +31,14 @@ class DefiLlamaAdapter {
       method = 'post'
     } else {
       url += '/' + subservice
-      url += '?' + serialize(data)
+      url += '?' + serialize(data ?? {})
       data = undefined
     }
-    return [url, data, method]
+    return {
+      url,
+      data,
+      method
+    }
   }
 }
 

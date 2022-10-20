@@ -5,7 +5,7 @@
 // packages and outputs json.
 
 const { ApiAdapter } = require('../api_adapter')
-const { DefiLamaAdapter } = require('../defilama')
+const { DefiLamaAdapter } = require('../handlers/defilama')
 const { randomized_services } = require('../services')
 
 require('dotenv').config()
