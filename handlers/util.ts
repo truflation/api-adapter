@@ -12,24 +12,30 @@ Promise<void> {
   const data = body.data ?? {}
   let args: object | string
   let r: any
-  if (typeof data === 'string' || data instanceof String) {
-    args = JSON.parse(data.toString())
-  } else {
-    args = data
-  }
-  if (Array.isArray(args)) {
-    r = nerdamer(...args).evaluate()
-  } else {
-    r = nerdamer(args).evaluate()
-  }
-  const [retval, json] = extractData(
-    r, body
-  )
-  if (json) {
-    res.json(retval)
-  } else {
-    res.write(retval)
-    res.end(undefined, 'binary')
+  try {
+    if (typeof data === 'string' || data instanceof String) {
+      console.log(data)
+      args = JSON.parse(data.toString())
+      console.log(args)
+    } else {
+      args = data
+    }
+    if (Array.isArray(args)) {
+      r = nerdamer(args[0]).evaluate(args[1]).text()
+    } else {
+      r = nerdamer(args).evaluate().text()
+    }
+    const [retval, json] = await extractData(
+      r, body
+    )
+    if (json) {
+      res.json(retval)
+    } else {
+      res.write(retval)
+      res.end(undefined, 'binary')
+    }
+  } catch (err) {
+    res.status(200).send(err)
   }
 }
 
