@@ -14,16 +14,14 @@ Promise<void> {
   let r: any
   try {
     if (typeof data === 'string' || data instanceof String) {
-      console.log(data)
       args = JSON.parse(data.toString())
-      console.log(args)
     } else {
       args = data
     }
-    if (Array.isArray(args)) {
-      r = nerdamer(args[0]).evaluate(args[1]).text()
+    if (args.eval !== undefined && args.eval !== '') {
+      r = nerdamer(args.expr).evaluate(args.eval).text()
     } else {
-      r = nerdamer(args).evaluate().text()
+      r = nerdamer(args.expr).evaluate().text()
     }
     const [retval, json] = await extractData(
       r, body
