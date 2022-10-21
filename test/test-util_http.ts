@@ -15,7 +15,7 @@ describe('Test', () => {
   })
 
   it('connect', testPacket({
-    service: 'util/http-get',
+    service: 'util/http',
     abi: 'uint256',
     multiplier: '1000000000000000000',
     data: { url: 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2020-11-24/currencies/eur.json' },
