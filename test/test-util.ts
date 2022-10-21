@@ -47,6 +47,14 @@ describe('Test', () => {
   }, {
     equal: '7'
   })).timeout(20000)
+
+  it('connect', testPacket({
+    service: 'util/math/nerdamer',
+    data: { expr: 'diff(y*x^2, x)', eval: { x: 3.5, y: 2 } }
+  }, {
+    equal: '14'
+  })).timeout(20000)
+
   it('connect', testPacket({
     service: 'util/math/nerdamer',
     data: { expr: '10*20' }
