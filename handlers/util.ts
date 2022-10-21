@@ -7,10 +7,15 @@ require('nerdamer/Calculus')
 require('nerdamer/Solve')
 require('nerdamer/Extra')
 
+interface MathData {
+  expr?: string
+  eval?: object | string
+}
+
 async function UtilMathNerdamerFunc (body: TfiRequest, res: Response):
 Promise<void> {
   const data = body.data ?? {}
-  let args: object | string
+  let args: MathData
   let r: any
   try {
     if (typeof data === 'string' || data instanceof String) {

@@ -18,7 +18,7 @@ describe('Test', () => {
     service: 'util/math/nerdamer',
     abi: 'uint256',
     multiplier: '1000000000000000000',
-    data: {expr: "2+2"}
+    data: { expr: '2+2' }
   }, {
     equal: '0x0000000000000000000000000000000000000000000000003782dace9d900000'
   })).timeout(20000)
@@ -27,7 +27,7 @@ describe('Test', () => {
     service: 'util/math/nerdamer',
     abi: 'uint256',
     multiplier: '1000000000000000000',
-    data: {expr: "x^2", eval: {x: 3}}
+    data: { expr: 'x^2', eval: { x: 3 } }
   }, {
     equal: '0x0000000000000000000000000000000000000000000000007ce66c50e2840000'
   })).timeout(20000)
@@ -36,22 +36,21 @@ describe('Test', () => {
     service: 'util/math/nerdamer',
     abi: 'uint256',
     multiplier: '1000000000000000000',
-    data: {expr: "x^2", eval: {x: 3.5}}
+    data: { expr: 'x^2', eval: { x: 3.5 } }
   }, {
     equal: '0x000000000000000000000000000000000000000000000000aa00be18c2890000'
   })).timeout(20000)
 
   it('connect', testPacket({
     service: 'util/math/nerdamer',
-    data: {expr: "diff(x^2, x)", eval: {x: 3.5}}
+    data: { expr: 'diff(x^2, x)', eval: { x: 3.5 } }
   }, {
     equal: '7'
   })).timeout(20000)
   it('connect', testPacket({
     service: 'util/math/nerdamer',
-    data: {expr: "10*20"}
+    data: { expr: '10*20' }
   }, {
     equal: '200'
   })).timeout(20000)
-
 })
