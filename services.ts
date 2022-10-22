@@ -24,7 +24,10 @@ const truflationApiHostUk =
       'http://api.truflation.io:1066'
 const truflationNftHost =
       process.env.TRUFLATION_NFT_HOST ??
-      'http://nft.truflation.io:8080'
+  'http://nft.truflation.io:8080'
+const truflationDataHost =
+  process.env.TRUFLATION_DATA_HOST ??
+  'http://api-test.truflation.io:7772'
 
 interface Location {
   location: string | undefined
@@ -85,6 +88,7 @@ const services = {
     'truflation/current': `${truflationApiHost}/current`,
     'truflation/at-date': `${truflationApiHost}/at-date`,
     'truflation/range': `${truflationApiHost}/range`,
+    'truflation/data': '${truflationDataHost}/data',
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
     'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index',
     minertoken: 'http://api.truflation.io:2222/mt'
@@ -93,6 +97,7 @@ const services = {
     'truflation/current': true,
     'truflation/at-date': true,
     'truflation/range': true,
+    'truflation/data': true,
     'nuon/dynamic-index': true,
     'nuon/static-index': true,
     minertoken: true
