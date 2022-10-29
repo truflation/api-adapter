@@ -304,7 +304,7 @@ export class ApiAdapter {
       .then(async response => {
         let result = response.data
         if (this.services.urlPostProcess?.[service] !== undefined) {
-          result = this.services.urlPostProcess?.[service](input, result)
+          result = await this.services.urlPostProcess?.[service](input, result)
         }
         const [retval, json] = await extractData(
           result, input,

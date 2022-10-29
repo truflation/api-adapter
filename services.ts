@@ -5,6 +5,7 @@
 // packages and outputs json.
 
 import nodecallspython from 'node-calls-python'
+import csv from 'csvtojson'
 import {
   echoFunc, stub1Func, fuzzFunc, echoPythonFunc,
   TfiRequest
@@ -60,7 +61,7 @@ interface TruflationData {
   location?: string
 }
 
-function truflationPostProcess (body: TfiRequest, result: object): object {
+async function truflationPostProcess (body: TfiRequest, result: object): object {
   let data: TruflationData
   if ((typeof body.data === 'string' ||
     body.data instanceof String) &&
@@ -80,6 +81,15 @@ function truflationPostProcess (body: TfiRequest, result: object): object {
   ) as object
 }
 
+async function truflationDataPostProcess (body: TfiRequest, result: string): object {
+  result = result.replace(
+    /^\s*IDs:[^\n]*\n/, ''
+  ).replace(
+    /\n?[^\n]+Result[^\n]+\s*$/, ''
+  )
+  return await csv().fromString(result)
+}
+
 const services = {
   urlPost: {
     'nft-index': `${truflationNftHost}/nft-calc/index-value`
@@ -88,7 +98,7 @@ const services = {
     'truflation/current': `${truflationApiHost}/current`,
     'truflation/at-date': `${truflationApiHost}/at-date`,
     'truflation/range': `${truflationApiHost}/range`,
-    'truflation/data': '${truflationDataHost}/data',
+    'truflation/data': `${truflationDataHost}/data`,
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
     'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index',
     minertoken: 'http://api.truflation.io:2222/mt'
@@ -110,7 +120,8 @@ const services = {
   urlPostProcess: {
     'truflation/current': truflationPostProcess,
     'truflation/at-date': truflationPostProcess,
-    'truflation/range': truflationPostProcess
+    'truflation/range': truflationPostProcess,
+    'truflation/data': truflationDataPostProcess
   },
   func: {
     echo: echoFunc,
