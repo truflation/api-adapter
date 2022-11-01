@@ -59,9 +59,10 @@ function addLocation (url: string, datain: Location): [string, Location] {
 interface TruflationData {
   categories?: string
   location?: string
+  date?: string
 }
 
-async function truflationPostProcess (body: TfiRequest, result: object): object {
+async function truflationPostProcess (body: TfiRequest, result: object): Promise<object> {
   let data: TruflationData
   if ((typeof body.data === 'string' ||
     body.data instanceof String) &&
@@ -81,7 +82,11 @@ async function truflationPostProcess (body: TfiRequest, result: object): object 
   ) as object
 }
 
-async function truflationDataPostProcess (body: TfiRequest, result: string): object {
+
+async function truflationDataPostProcess (body: TfiRequest, result: string): Promise<object> {
+  interface DataReturn {
+    date?: string
+  }
   let data: TruflationData
   if ((typeof body.data === 'string' ||
     body.data instanceof String) &&
@@ -106,7 +111,7 @@ async function truflationDataPostProcess (body: TfiRequest, result: string): obj
     }
     return {}
   } else {
-    let retval = {}
+    let retval: DataReturn = {}
     for (const val of await csv().fromString(result)) {
       if (retval?.date === undefined ||
 	retval?.date < val?.date) {
