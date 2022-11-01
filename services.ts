@@ -82,12 +82,39 @@ async function truflationPostProcess (body: TfiRequest, result: object): object 
 }
 
 async function truflationDataPostProcess (body: TfiRequest, result: string): object {
+  let data: TruflationData
+  if ((typeof body.data === 'string' ||
+    body.data instanceof String) &&
+    body.data.replace(/\s/g, '').length !== 0) {
+    data = JSON.parse(body.data.toString()) as TruflationData
+  } else {
+    data = (body.data as object ?? {}) as TruflationData
+  }
   result = result.replace(
     /^\s*IDs:[^\n]*\n/, ''
   ).replace(
     /\n?[^\n]+Result[^\n]+\s*$/, ''
+  ).replace(
+    /Date,[^\n]+\n/, `date,value
+`
   )
-  return await csv().fromString(result)
+  if (data?.date !== undefined) {
+    for (const val of await csv().fromString(result)) {
+      if (val.date === data.date) {
+        return val
+      }
+    }
+    return {}
+  } else {
+    let retval = {}
+    for (const val of await csv().fromString(result)) {
+      if (retval?.date === undefined ||
+	retval?.date < val?.date) {
+        retval = val
+      }
+    }
+    return retval
+  }
 }
 
 const services = {
