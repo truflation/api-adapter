@@ -29,11 +29,28 @@ const truflationNftHost =
 const truflationDataHost =
   process.env.TRUFLATION_DATA_HOST ??
   'http://api-test.truflation.io:7772'
+const truflationSeriesHost =
+  process.env.TRUFLATION_SERIES_HOST ??
+  'http://api-test.truflation.io:8181/series'
 
 interface Location {
   location: string | undefined
   categories: string | undefined
   derivation: string | undefined
+}
+
+interface SeriesData {
+  ids: string
+  types: string
+  start_date: string
+  end_date: string
+}
+
+function processSeries (url: string, data: Location): [string, Location] {
+  url = url + '/' + path.join(
+    data.ids, data.types, data.start_date, data.end_date
+  )
+  return [url, {}]
 }
 
 function addLocation (url: string, datain: Location): [string, Location] {
@@ -81,7 +98,6 @@ async function truflationPostProcess (body: TfiRequest, result: object): Promise
     location, result
   ) as object
 }
-
 
 async function truflationDataPostProcess (body: TfiRequest, result: string): Promise<object> {
   interface DataReturn {
@@ -131,6 +147,7 @@ const services = {
     'truflation/at-date': `${truflationApiHost}/at-date`,
     'truflation/range': `${truflationApiHost}/range`,
     'truflation/data': `${truflationDataHost}/data`,
+    'truflation/series': `${truflationSeriesHost}`,
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
     'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index',
     minertoken: 'http://api.truflation.io:2222/mt'
@@ -147,7 +164,8 @@ const services = {
   urlTransform: {
     'truflation/current': addLocation,
     'truflation/at-date': addLocation,
-    'truflation/range': addLocation
+    'truflation/range': addLocation,
+    'truflation/series': processSeries
   },
   urlPostProcess: {
     'truflation/current': truflationPostProcess,
