@@ -46,7 +46,7 @@ interface SeriesData {
   end_date: string
 }
 
-function processSeries (url: string, data: Location): [string, Location] {
+function processSeries (url: string, data: SeriesData): [string, object] {
   url = url + '/' + path.join(
     data.ids, data.types, data.start_date, data.end_date
   )
