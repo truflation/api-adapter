@@ -33,6 +33,7 @@ describe('Test', () => {
     service: 'truflation/data/test',
     data: { id: 805000 },
     abi: 'uint256',
+    keypath: 'value',
     multiplier: '1000000000000000000'
   })).timeout(20000)
 })

@@ -346,7 +346,7 @@ export async function echoFunc (body: TfiRequest, res): Promise<void> {
 export async function dataTestFunc (body: TfiRequest, res): Promise<void> {
   let data = 120.0 + Math.random() * 20.0 - 10.0
   const [retval, json] = await extractData(
-    data.toString(), body
+    {"value": data.toString()}, body
   )
   console.log(retval)
   if (json) {
