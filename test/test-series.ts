@@ -16,5 +16,5 @@ describe('Test', () => {
     keypath: 'result.0.1.0',
     abi: 'int256',
     multiplier: '100000000000000'
-  }, {verbose: true})).timeout(20000)
+  }, { verbose: true })).timeout(20000)
 })

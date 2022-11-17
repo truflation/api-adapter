@@ -8,7 +8,7 @@ import nodecallspython from 'node-calls-python'
 import csv from 'csvtojson'
 import {
   echoFunc, stub1Func, fuzzFunc, echoPythonFunc,
-  TfiRequest
+  dataTestFunc, TfiRequest
 } from './api_adapter'
 import path = require('node:path')
 
@@ -176,6 +176,7 @@ const services = {
   func: {
     echo: echoFunc,
     'echo/python': echoPythonFunc,
+    'truflation/data/test': dataTestFunc,
     stub1: stub1Func,
     fuzz: fuzzFunc
   }

@@ -343,6 +343,20 @@ export async function echoFunc (body: TfiRequest, res): Promise<void> {
   }
 }
 
+export async function dataTestFunc (body: TfiRequest, res): Promise<void> {
+  let data = 120.0 + Math.random() * 20.0 - 10.0
+  const [retval, json] = await extractData(
+    data.toString(), body
+  )
+  console.log(retval)
+  if (json) {
+    res.json(retval)
+  } else {
+    res.write(retval)
+    res.end(undefined, 'binary')
+  }
+}
+
 export async function echoPythonFunc (body: TfiRequest, res): Promise<void> {
   let data: any = body.data ?? {}
   if (typeof data === 'string' || data instanceof String) {
@@ -419,5 +433,6 @@ module.exports = {
   stub1Func,
   echoPythonFunc,
   fuzzFunc,
+  dataTestFunc,
   serialize
 }
