@@ -29,7 +29,9 @@ module.exports = {
   app, randomizedApp
 }
 
-if (require.main === module) {
+if (process.argv.slice(2).includes('--compile-only')) {
+  console.log('compile successful')
+} else if (require.main === module) {
   app.listen(process.env.EA_PORT || 8081)
   randomizedApp.listen(process.env.EA_FUZZ_PORT || 8082)
 }

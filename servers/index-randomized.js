@@ -19,6 +19,8 @@ app.register_handler(new DefiLamaAdapter())
 app.register_handler(new UtilHttpAdapter())
 registerUtil(app)
 
-if (require.main === module) {
+if (process.argv.slice(2).includes('--compile-only')) {
+  console.log('compile successful')
+} else if (require.main === module) {
   app.listen(process.env.EA_PORT || 8081)
 }

@@ -16,6 +16,7 @@ USER node
 COPY --from=builder --chown=node:node /home/node/app /home/node/app
 WORKDIR /home/node/app
 RUN ln -sf servers/index-${CONFIG}.js index.js
+RUN npx ts-node index.js --compile-only
 EXPOSE 8081
 EXPOSE 8082
 
