@@ -242,6 +242,7 @@ export class ApiAdapter {
   }
 
   createRequest (input: TfiRequest, callback): void {
+    console.log(`input=${input}`)
     const service = input.service
     let data = input.data ?? {}
     if ((typeof data === 'string' ||
@@ -252,8 +253,6 @@ export class ApiAdapter {
     if (data === undefined) {
       data = {}
     }
-    console.log(service)
-    console.log(`data=${data}`)
     let url = this.services?.urlPost?.[service]
     let method = 'post'
     if (url === undefined) {
