@@ -11,11 +11,13 @@ describe('Test', () => {
   })
 
   it('connect', testPacket({
-    service: 'truflation/data',
-    data: { id: '8001010', date: '2022-10-04' }
+    service: 'truflation/series',
+    data: { ids: '603', types: '114', date: '2022-10-04' },
+    keypath: 'result.0.1.0',
   })).timeout(20000)
   it('connect', testPacket({
-    service: 'truflation/data',
-    data: { id: '8001010' }
+    service: 'truflation/series',
+    data: { ids: '603', types: '114' },
+    keypath: 'result.0.1.0',
   })).timeout(20000)
 })

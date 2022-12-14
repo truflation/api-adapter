@@ -5,10 +5,8 @@
 // packages and outputs json.
 
 import nodecallspython from 'node-calls-python'
-import csv from 'csvtojson'
 import {
-  echoFunc, stub1Func, fuzzFunc, echoPythonFunc,
-  dataTestFunc, TfiRequest
+  echoFunc, stub1Func, fuzzFunc, echoPythonFunc, TfiRequest
 } from './api_adapter'
 import path = require('node:path')
 
@@ -26,9 +24,6 @@ const truflationApiHostUk =
 const truflationNftHost =
       process.env.TRUFLATION_NFT_HOST ??
   'http://nft.truflation.io:8080'
-const truflationDataHost =
-  process.env.TRUFLATION_DATA_HOST ??
-  'http://api-test.truflation.io:7772'
 const truflationSeriesHost =
   process.env.TRUFLATION_SERIES_HOST ??
   'http://api-test.truflation.io:8181/series'
@@ -42,14 +37,26 @@ interface Location {
 interface SeriesData {
   ids: string
   types: string
-  start_date: string
-  end_date: string
+  date: string | undefined
+  start_date: string | undefined
+  end_date: string | undefined
 }
 
 function processSeries (url: string, data: SeriesData): [string, object] {
+  console.log(data)
   url = url + '/' + path.join(
-    data.ids, data.types, data.start_date, data.end_date
+    data.ids, data.types
   )
+  if (data.date !== undefined) {
+    url = url + '/' + data.date
+  } else {
+    if (data.start_date !== undefined) {
+      url = url + '/' + data.start_date
+    }
+    if (data.end_date !== undefined) {
+      url = url + '/' + data.end_date
+    }
+  }
   return [url, {}]
 }
 
@@ -99,45 +106,6 @@ async function truflationPostProcess (body: TfiRequest, result: object): Promise
   ) as object
 }
 
-async function truflationDataPostProcess (body: TfiRequest, result: string): Promise<object> {
-  interface DataReturn {
-    date?: string
-  }
-  let data: TruflationData
-  if ((typeof body.data === 'string' ||
-    body.data instanceof String) &&
-    body.data.replace(/\s/g, '').length !== 0) {
-    data = JSON.parse(body.data.toString()) as TruflationData
-  } else {
-    data = (body.data as object ?? {}) as TruflationData
-  }
-  result = result.replace(
-    /^\s*IDs:[^\n]*\n/, ''
-  ).replace(
-    /\n?[^\n]+Result[^\n]+\s*$/, ''
-  ).replace(
-    /Date,[^\n]+\n/, `date,value
-`
-  )
-  if (data?.date !== undefined) {
-    for (const val of await csv().fromString(result)) {
-      if (val.date === data.date) {
-        return val
-      }
-    }
-    return {}
-  } else {
-    let retval: DataReturn = {}
-    for (const val of await csv().fromString(result)) {
-      if (retval?.date === undefined ||
-	retval?.date < val?.date) {
-        retval = val
-      }
-    }
-    return retval
-  }
-}
-
 const services = {
   urlPost: {
     'nft-index': `${truflationNftHost}/nft-calc/index-value`
@@ -146,7 +114,6 @@ const services = {
     'truflation/current': `${truflationApiHost}/current`,
     'truflation/at-date': `${truflationApiHost}/at-date`,
     'truflation/range': `${truflationApiHost}/range`,
-    'truflation/data': `${truflationDataHost}/data`,
     'truflation/series': `${truflationSeriesHost}`,
     'nuon/dynamic-index': 'https://truflation-api-test.hydrogenx.live/nuon/dynamic-index',
     'nuon/static-index': 'https://truflation-api-test.hydrogenx.live/nuon/static-index',
@@ -156,7 +123,6 @@ const services = {
     'truflation/current': true,
     'truflation/at-date': true,
     'truflation/range': true,
-    'truflation/data': true,
     'nuon/dynamic-index': true,
     'nuon/static-index': true,
     minertoken: true
@@ -170,13 +136,11 @@ const services = {
   urlPostProcess: {
     'truflation/current': truflationPostProcess,
     'truflation/at-date': truflationPostProcess,
-    'truflation/range': truflationPostProcess,
-    'truflation/data': truflationDataPostProcess
+    'truflation/range': truflationPostProcess
   },
   func: {
     echo: echoFunc,
     'echo/python': echoPythonFunc,
-    'truflation/data/test': dataTestFunc,
     stub1: stub1Func,
     fuzz: fuzzFunc
   }
