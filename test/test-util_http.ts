@@ -18,8 +18,8 @@ describe('Test', () => {
     service: 'util/http',
     abi: 'uint256',
     multiplier: '1000000000000000000',
-    data: { url: 'https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/2020-11-24/currencies/eur.json' },
-    keypath: 'eur.aed'
+    data: { url: 'https://raw.githubusercontent.com/fawazahmed0/currency-api/1/2022-01-02/currencies/eur/aed.json' },
+    keypath: 'aed'
   }, {
     regexp: '^0x[0-9a-fA-F]{64}$'
   })).timeout(20000)
