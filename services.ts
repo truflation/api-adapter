@@ -18,15 +18,12 @@ const cpiCategories = py.importSync(
 const truflationApiHost =
       process.env.TRUFLATION_API_HOST ??
       'https://api.truflation.io'
-const truflationApiHostUk =
-      process.env.TRUFLATION_API_HOST_UK ??
-      'http://api.truflation.io:1066'
 const truflationNftHost =
       process.env.TRUFLATION_NFT_HOST ??
   'http://nft.truflation.io:8080'
 const truflationSeriesHost =
   process.env.TRUFLATION_SERIES_HOST ??
-  'http://api-test.truflation.io:8181/series'
+  'https://api.truflation.io/tfi/series/v1'
 
 interface Location {
   location: string | undefined
@@ -66,15 +63,17 @@ function addLocation (url: string, datain: Location): [string, Location] {
     data['show-derivation'] = 'true'
   }
   if (data?.location === undefined) {
+    data['index-id'] = '4'
+    delete data.location
     return [url, data]
   }
   if (data.location === 'us') {
+    data['index-id'] = '4'
     delete data.location
     return [url, data]
   }
   if (data.location === 'uk') {
-    url = url.replace(truflationApiHost,
-      truflationApiHostUk)
+    data['index-id'] = '2'
     delete data.location
   }
   return [url, data]
@@ -115,8 +114,8 @@ const services = {
     'truflation/at-date': `${truflationApiHost}/at-date`,
     'truflation/range': `${truflationApiHost}/range`,
     'truflation/series': `${truflationSeriesHost}`,
-    'nuon/price': 'http://api.truflation.io:2223/nuon/price',
-    minertoken: 'http://api.truflation.io:2222/mt'
+    'nuon/price': 'https://api.truflation.io/nuon/price',
+    minertoken: 'https://api.truflation.io/mt'
   },
   urlEncodeData: {
     'truflation/current': true,

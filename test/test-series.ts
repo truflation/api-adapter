@@ -12,8 +12,8 @@ describe('Test', () => {
 
   it('connect', testPacket({
     service: 'truflation/series',
-    data: { ids: '301', types: '121', start_date: '2022-08-01', end_date: '2022-08-01' },
-    keypath: 'result.0.1.0',
+    data: { ids: '601', types: '110', start_date: '2022-08-01', end_date: '2022-08-01' },
+    keypath: '2022-08-01.601.110',
     abi: 'int256',
     multiplier: '100000000000000'
   }, { verbose: true })).timeout(20000)

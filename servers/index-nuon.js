@@ -10,7 +10,7 @@ require('dotenv').config()
 
 const services = {
   urlGet: {
-    'nuon/price': 'http://api.truflation.io:2223/nuon/price'
+    'nuon/price': 'https://api.truflation.io/nuon/price'
   },
   urlEncodeData: {
     'nuon/price': true
