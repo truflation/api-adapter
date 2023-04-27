@@ -26,14 +26,14 @@ describe('Test', () => {
     abi: 'json',
     data: { location: 'us', date: '2022-01-01', categories: 'true' },
     keypath: 'categories.Personal Care products and services.yearOverYearInflation'
-  }, 3.559280755395548)).timeout(20000)
+  }, 3.5367638069527345)).timeout(20000)
   it('keypath', testPacket({
     service: 'truflation/at-date',
     abi: 'int256',
     multiplier: '1000000000000000000',
     data: { location: 'us', date: '2022-01-01', categories: 'true' },
     keypath: 'categories.Personal Care products and services.yearOverYearInflation'
-  }, '0x00000000000000000000000000000000000000000000000031651afd393c5360')).timeout(20000)
+  }, '0x00000000000000000000000000000000000000000000000031151bf19fe03f24')).timeout(20000)
   after(() => {
     app.close()
   })
