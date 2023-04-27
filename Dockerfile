@@ -1,4 +1,9 @@
-FROM node:18-alpine as builder
+#https://github.com/nodejs/node/issues/46221
+# fix to 19.0.1 otherwise ipfs-http-client fails
+# upgrading ipfs-http-client will require rewrite of other
+# components to make fully ts compatible
+
+FROM node:19.0.1-alpine as builder
 RUN mkdir -p /home/node/app && chown -R node:node /home/node/app
 WORKDIR /home/node/app
 RUN apk add --no-cache --virtual .gyp python3 python3-dev g++ make libc6-compat
@@ -9,7 +14,7 @@ RUN yarn --frozen-lockfile
 COPY . .
 RUN yarn test
 
-FROM node:18-alpine as app
+FROM node:19.0.1-alpine as app
 RUN apk add --no-cache python3 python3-dev libc6-compat
 ARG CONFIG=main
 USER node
