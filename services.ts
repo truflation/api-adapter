@@ -41,6 +41,9 @@ interface SeriesData {
 
 function processSeries (url: string, data: SeriesData): [string, object] {
   console.log(data)
+  if (data.types == undefined) {
+    data.types = '114'
+  }
   url = url + '/' + path.join(
     data.ids, data.types
   )
@@ -105,6 +108,14 @@ async function truflationPostProcess (body: TfiRequest, result: object): Promise
   ) as object
 }
 
+async function truflationSeriesPostProcess (body: TfiRequest, result: object): Promise<object> {
+  if (body.keypath === undefined ||
+    body.data.replace(/\s/g, '').length !== 0) {
+    return Object.values(Object.values(Object.values(result)[0])[0])[0]
+  }
+  return result
+}
+
 const services = {
   urlPost: {
     'nft-index': `${truflationNftHost}/nft-calc/index-value`
@@ -133,7 +144,8 @@ const services = {
   urlPostProcess: {
     'truflation/current': truflationPostProcess,
     'truflation/at-date': truflationPostProcess,
-    'truflation/range': truflationPostProcess
+    'truflation/range': truflationPostProcess,
+    'truflation/series': truflationSeriesPostProcess
   },
   func: {
     echo: echoFunc,

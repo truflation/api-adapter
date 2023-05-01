@@ -13,11 +13,29 @@ describe('Test', () => {
   it('connect', testPacket({
     service: 'truflation/series',
     data: { ids: '603', types: '114', date: '2022-10-04' },
-    keypath: 'result.0.1.0',
   })).timeout(20000)
   it('connect', testPacket({
     service: 'truflation/series',
-    data: { ids: '603', types: '114' },
-    keypath: 'result.0.1.0',
+    data: { ids: '603' },
+  })).timeout(20000)
+  it('connect', testPacket({
+    service: 'truflation/series',
+    data: { ids: '603', date: '2022-10-04' },
+  })).timeout(20000)
+  it('connect', testPacket({
+    service: 'truflation/series',
+    data: { ids: '603', types: '114' }
+  })).timeout(20000)
+  it('connect', testPacket({
+    service: 'truflation/series',
+    data: { ids: '603', date: '2022-10-04' },
+    multiplier: '1000000000000000000',
+    abi: 'int256'
+  })).timeout(20000)
+  it('connect', testPacket({
+    service: 'truflation/series',
+    data: { ids: '603' },
+    multiplier: '1000000000000000000',
+    abi: 'int256'
   })).timeout(20000)
 })
