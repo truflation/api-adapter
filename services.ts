@@ -108,10 +108,16 @@ async function truflationPostProcess (body: TfiRequest, result: object): Promise
   ) as object
 }
 
+function first_value(x: any) {
+  return Object.values(x)[0]
+}
+  
+  
+
 async function truflationSeriesPostProcess (body: TfiRequest, result: object): Promise<object> {
-  if (body.keypath === undefined ||
-    body.data.replace(/\s/g, '').length !== 0) {
-    return Object.values(Object.values(Object.values(result)[0])[0])[0]
+  if (body?.keypath === undefined ||
+    JSON.stringify(body).replace(/\s/g, '').length !== 0) {
+    return first_value(first_value(first_value(result))) as object
   }
   return result
 }
