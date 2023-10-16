@@ -31,7 +31,7 @@ function isNumeric (val): boolean {
 
 function getValue (object, key, strict) {
   if (object instanceof Object && typeof key === 'string') {
-    const a = key.split('.')
+    const a =  key.includes(',') ? key.split(',') : key.split('.');
     for (let i = 0; i < a.length; i++) {
       const k = a[i]
 
@@ -212,7 +212,6 @@ export class ApiAdapter {
       res.status(200).json({ error: 'permission denied' })
       return
     }
-
     const service = body?.service
     if (service === undefined) {
       res.status(200).json({ error: 'No service' })

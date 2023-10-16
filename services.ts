@@ -15,6 +15,8 @@ const cpiCategories = py.importSync(
   path.join(__dirname, 'cpi_categories.py')
 )
 
+require('dotenv').config()
+
 const truflationApiHost =
       process.env.TRUFLATION_API_HOST ??
       'https://api.truflation.io'
@@ -24,6 +26,9 @@ const truflationNftHost =
 const truflationSeriesHost =
   process.env.TRUFLATION_SERIES_HOST ??
   'https://api.truflation.io/tfi/series/v1'
+const truflationTickerHost =
+  process.env.TRUFLATION_TICKER_HOST ??
+  'https://api.truflation.com/api/v1/ticker'
 
 interface Location {
   location: string | undefined
@@ -60,8 +65,24 @@ function processSeries (url: string, data: SeriesData): [string, object] {
   return [url, {}]
 }
 
+function addTicker(url: string, data: object): [string, object] {
+  const apiKey = process.env.API_KEY;
+  console.log(data)
+  if (apiKey) {
+    const separator = url.includes('?') ? '&' : '?';
+    return [url, {...data, 'apikey': apiKey}];
+  }
+
+  return [url, data];
+}
+
+
 function addLocation (url: string, datain: Location): [string, Location] {
   const data = Object.assign({}, datain)
+  const apiKey = process.env.API_KEY;
+  if (apiKey) {
+    data['apikey'] = apiKey
+  }
   if (data?.categories === 'true') {
     data['show-derivation'] = 'true'
   }
@@ -111,8 +132,6 @@ async function truflationPostProcess (body: TfiRequest, result: object): Promise
 function first_value(x: any) {
   return Object.values(x)[0]
 }
-  
-  
 
 async function truflationSeriesPostProcess (body: TfiRequest, result: object): Promise<object> {
   if (body?.keypath === undefined ||
@@ -131,6 +150,7 @@ const services = {
     'truflation/at-date': `${truflationApiHost}/at-date`,
     'truflation/range': `${truflationApiHost}/range`,
     'truflation/series': `${truflationSeriesHost}`,
+    'truflation/ticker': `${truflationTickerHost}`,
     'nuon/price': 'https://api.truflation.io/nuon/price',
     minertoken: 'https://api.truflation.io/mt'
   },
@@ -138,6 +158,7 @@ const services = {
     'truflation/current': true,
     'truflation/at-date': true,
     'truflation/range': true,
+    'truflation/ticker': true,
     'nuon/price': true,
     minertoken: true
   },
@@ -145,7 +166,8 @@ const services = {
     'truflation/current': addLocation,
     'truflation/at-date': addLocation,
     'truflation/range': addLocation,
-    'truflation/series': processSeries
+    'truflation/series': processSeries,
+    'truflation/ticker': addTicker
   },
   urlPostProcess: {
     'truflation/current': truflationPostProcess,
