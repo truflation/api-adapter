@@ -31,7 +31,7 @@ function isNumeric (val): boolean {
 
 function getValue (object, key, strict) {
   if (object instanceof Object && typeof key === 'string') {
-    const a =  key.includes(',') ? key.split(',') : key.split('.');
+    const a = key.includes(',') ? key.split(',') : key.split('.')
     for (let i = 0; i < a.length; i++) {
       const k = a[i]
 
@@ -176,7 +176,7 @@ export class ApiAdapter {
   services: Services
   app: any
   listener: any
-  constructor (services: Services) {
+  constructor (services: Services, isSentryEnabled: boolean, Sentry) {
     services.fuzz = services?.fuzz ?? false
     services.func = services?.func ?? {}
     services.urlPost = services?.urlPost ?? {}
@@ -192,6 +192,10 @@ export class ApiAdapter {
     this.app.post('/', (req, res) => {
       this.process(req, res)
     })
+
+    if (isSentryEnabled) {
+      Sentry.setupExpressErrorHandler(this.app)
+    }
   }
 
   getPermission (body: TfiRequest): boolean {
@@ -342,9 +346,9 @@ export async function echoFunc (body: TfiRequest, res): Promise<void> {
 }
 
 export async function dataTestFunc (body: TfiRequest, res): Promise<void> {
-  let data = 120.0 + Math.random() * 20.0 - 10.0
+  const data = 120.0 + Math.random() * 20.0 - 10.0
   const [retval, json] = await extractData(
-    {"value": data.toString()}, body
+    { value: data.toString() }, body
   )
   console.log(retval)
   if (json) {
@@ -413,8 +417,8 @@ export async function stub1Func (body, res): Promise<void> {
 
 class PermissionedApiAdapter extends ApiAdapter {
   whiteList: string[]
-  constructor (services, whiteList: string[]) {
-    super(services)
+  constructor (services, whiteList: string[], isSentryEnabled: boolean, Sentry) {
+    super(services, isSentryEnabled, Sentry)
     this.whiteList = whiteList
   }
 
