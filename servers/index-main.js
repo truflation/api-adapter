@@ -5,11 +5,11 @@
 // packages and outputs json.
 
 const Sentry = require('@sentry/node')
+const { nodeProfilingIntegration } = require('@sentry/profiling-node')
 require('dotenv').config()
 
 // initialize Sentry for monitoring and logging
 const isSentryEnabled = !!process.env.SENTRY_DSN
-const { nodeProfilingIntegration } = require('@sentry/profiling-node')
 if (isSentryEnabled) {
   Sentry.init({
     dsn: process.env.SENTRY_DSN,
