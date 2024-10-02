@@ -12,6 +12,20 @@ const { services, randomizedServices } = require('../services')
 
 require('dotenv').config()
 
+// initialize Sentry for monitoring and logging
+if (process.env.SENTRY_DSN) {
+  const Sentry = require('@sentry/node')
+  const { nodeProfilingIntegration } = require('@sentry/profiling-node')
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    integrations: [
+      nodeProfilingIntegration()
+    ],
+    tracesSampleRate: 0.2,
+    profilesSampleRate: 0.2
+  })
+}
+
 // note that the api endpoints are for testing purposes only and are
 // subject to change
 
