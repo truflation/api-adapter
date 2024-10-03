@@ -4,17 +4,19 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
+const { Sentry, isSentryEnabled } = require('./sentry')
 const { ApiAdapter } = require('../api_adapter')
 const { DefiLamaAdapter } = require('../handlers/defilama')
+const { UtilHttpAdapter } = require('../handlers/util_http')
 const { registerUtil } = require('../handlers/util')
-const { randomized_services } = require('../services')
+const { randomizedServices } = require('../services')
 
 require('dotenv').config()
 
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
-const app = new ApiAdapter(randomized_services)
+const app = new ApiAdapter(randomizedServices, isSentryEnabled, Sentry)
 app.register_handler(new DefiLamaAdapter())
 app.register_handler(new UtilHttpAdapter())
 registerUtil(app)
