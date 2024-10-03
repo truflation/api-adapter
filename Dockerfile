@@ -10,7 +10,7 @@ RUN apk add --no-cache --virtual .gyp python3 python3-dev g++ make libc6-compat
 COPY --chown=node:node . .
 COPY yarn.lock ./
 COPY package.json ./
-RUN yarn --frozen-lockfile
+RUN yarn install
 COPY . .
 RUN yarn test
 
