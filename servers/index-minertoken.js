@@ -4,23 +4,24 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
+const { Sentry, isSentryEnabled } = require('./sentry')
 const { ApiAdapter } = require('../api_adapter')
 
 require('dotenv').config()
 
-let services = {
+const services = {
   urlGet: {
-    'minertoken': 'http://api.truflation.io:2222/mt'
+    minertoken: 'http://api.truflation.io:2222/mt'
   },
   urlEncodeData: {
-    'minertoken': true
+    minertoken: true
   }
 }
 
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
-const app = new ApiAdapter(services)
+const app = new ApiAdapter(services, isSentryEnabled, Sentry)
 
 module.exports = {
   app

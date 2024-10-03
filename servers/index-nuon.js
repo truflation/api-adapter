@@ -4,6 +4,7 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
+const { Sentry, isSentryEnabled } = require('./sentry')
 const { ApiAdapter } = require('../api_adapter')
 
 require('dotenv').config()
@@ -20,7 +21,7 @@ const services = {
 // note that the api endpoints are for testing purposes onlu and are
 // subject to change
 
-const app = new ApiAdapter(services, [])
+const app = new ApiAdapter(services, isSentryEnabled, Sentry)
 
 module.exports = {
   app

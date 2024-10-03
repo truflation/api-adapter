@@ -4,22 +4,9 @@
 // This is a simple chainlab adapter that processes incoming json
 // packages and outputs json.
 
-const Sentry = require('@sentry/node')
-const { nodeProfilingIntegration } = require('@sentry/profiling-node')
-require('dotenv').config()
+const { Sentry, isSentryEnabled } = require('./sentry')
 
-// initialize Sentry for monitoring and logging
-const isSentryEnabled = !!process.env.SENTRY_DSN
-if (isSentryEnabled) {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    integrations: [
-      nodeProfilingIntegration()
-    ],
-    tracesSampleRate: 0.2,
-    profilesSampleRate: 0.2
-  })
-}
+require('dotenv').config()
 
 const { ApiAdapter } = require('../api_adapter')
 const { DefiLlamaAdapter } = require('../handlers/defillama')
